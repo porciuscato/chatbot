@@ -57,13 +57,13 @@ def destiny():
     else :
         babos[babo]={you:random.choice(range(51,101))}
         return render_template('destiny.html',babo=babo,you=you,hap=babos[babo][you])
-    # 두 사람의 궁합을 출력한다.
-    # 속은 사람들의 명단을 보여준다.
+    
 
 #babos에 있는 사람들 모두 출력하기
 @app.route('/admin')
 def admin():
     babos_list=[]
+    # 속은 사람들의 명단을 보여준다.
     for name in babos:
         babos_list.append(name)
     return render_template('admin.html',result=babos_list)
@@ -90,4 +90,3 @@ def history():
 
 if __name__=='__main__':
     app.run(debug=True)
-
