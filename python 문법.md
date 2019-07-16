@@ -1,5 +1,39 @@
 # 파이썬과 주피터에 대한 첨언
 
+rm -rf / 
+
+모든 걸 다 지우는 무서운 
+
+gitignore.io
+
+
+
+```python
+# # 입력받는 법
+# # 맵으로 함
+# a = input()
+# # 글자를 자르는 방법. 구분자를 어떻게?
+# b = a.split(" ")
+# num1 = int(b[0])
+# num2 = int(b[1])
+# num1, num2 = map(int, b)
+# 요소요소 하나마다 앞에 정의된 함수를 먹인다.
+# num1, num2 = map(int, input().split(" "))
+b = map(int, input().split(" "))
+print(type(b))
+print(dir(map(int, input().split(" "))))
+```
+
+
+
+
+
+
+
+
+
+
+
 Guido van Rossum
 
 귀도 판 로썸
@@ -456,4 +490,434 @@ print("""
     
     ```
 
-    
+
+
+
+#### 이스케이프 문자열
+
+| <center>예약문자</center> |   내용(의미)    |
+| :-----------------------: | :-------------: |
+|            \n             |     줄바꿈      |
+|            \t             |       탭        |
+|            \r             |   캐리지리턴    |
+|            \0             |    널(Null)     |
+|           `\\`            |       `\`       |
+|            \'             | 단일인용부호(') |
+|            \"             | 이중인용부호(") |
+
+```python
+# print를 하는 과정에서도 이스케이프 문자열을 활용 가능합니다.
+print("내용을 띠워서 출력하고 싶으면",end=' ')
+print("이렇게 하시면 되요")
+```
+
+
+
+#### string interpolation 수술
+
+1) `%-formatting`
+
+2) [`str.format()`](https://pyformat.info/)
+
+3) [`f-strings`](https://www.python.org/dev/peps/pep-0498/) : 파이썬 3.6 버전 이후에 지원 되는 사항입니다. 최근의 트렌드
+
+`.format()`는 해당 [링크](https://pyformat.info/)에서 확인바랍니다.
+
+```python
+# name 변수에 이름을 입력해봅시다.
+name = 'hong'
+age = 15
+major = 'Computer Science'
+address = 132
+# %-formatting을 활용해봅시다.
+print('제 이름은 %s입니다. 나이는 %d이며 전공은 %s입니다. %s번지에 살고 있습니다.'% (name,age,major,address))
+# str.format()을 활용해봅시다.
+print('제 이름은 {0}입니다. 나이는 {1}이며 전공은 {2}입니다. {3}번지에 살고 있습니다.'.format(name,age,major,address))
+# f-string을 활용해봅시다.
+print(f'제 이름은 {name}입니다. 나이는 {age}이며 전공은 {major}입니다. {address}번지에 살고 있습니다.')
+```
+
+
+
+### 연산자
+
+#### 산술연산자
+
+| 연산자 | 내용           |
+| ------ | -------------- |
+| +      | 덧셈           |
+| -      | 뺄셈           |
+| \*     | 곱셈           |
+| /      | 나눗셈         |
+| //     | 몫             |
+| %      | 나머지(modulo) |
+| \*\*   | 거듭제곱       |
+
+- divmod
+
+```python
+# divmod는 나눗셈과 관련된 함수입니다.
+quotient, remainder = divmod(7,3)
+# 몫과 나머지
+print(type(divmod(7,3)))
+print(quotient, remainder)
+print(f'몫은 {quotient}, 나머지는 {remainder}')
+```
+
+-  양수/음수 표현
+
+```python
+# 음수 양수 표현도 해봅시다.
+pos =4
+print(-pos)
+print(type(pos))
+```
+
+
+
+#### 비교연산자
+
+| 연산자 | 내용     |
+| ------ | -------- |
+| a > b  | 초과     |
+| a < b  | 미만     |
+| a >= b | 이상     |
+| a <= b | 이하     |
+| a == b | 같음     |
+| a != b | 같지않음 |
+
+
+
+#### 논리연산자
+
+| 연산자  | 내용                         |
+| ------- | :--------------------------- |
+| a and b | a와 b 모두 True시만 True     |
+| a or b  | a 와 b 모두 False시만 False  |
+| not a   | True -> False, False -> True |
+
+```python
+# not을 활용해봅시다.
+print(not True)
+print(not False)
+print(not 0)
+print(not None)
+print(not [])
+```
+
+
+
+#### 단축평가
+
+- 파이썬에서 and는 a가 거짓이면 a를 리턴하고, 참이면 b를 리턴한다.
+- 파이썬에서 or은 a가 참이면 a를 리턴하고, 거짓이면 b를 리턴한다.
+
+```python
+# and의 단축평가(short-circuit evaluation)에 대해서 알아봅시다.
+print(3 and 5)
+print(3 and 0)
+print(0 and 3)
+print(0 and 0)
+print(True and 3)
+print(False and 3)
+# 5 0 0 0 3 False
+```
+
+```python
+# or의 단축평가(short-circuit evaluation)에 대해서 알아봅시다.
+print(3 or 5)
+print(False or 6)
+print(0 or False)
+# 웹으로 가면 빈번하게 쓴다
+3 6 False
+```
+
+
+
+#### 복합연산자
+
+| 연산자    | 내용       |
+| --------- | ---------- |
+| a += b    | a = a + b  |
+| a -= b    | a = a - b  |
+| a \*= b   | a = a \* b |
+| a /= b    | a = a / b  |
+| a //= b   | a = a // b |
+| a %= b    | a = a % b  |
+| a \*\*= b | a = a ** b |
+
+
+
+#### 기타연산자
+
+##### Concatenation
+
+숫자가 아닌 자료형은 `+` 연산자를 통해 합칠 수 있다.
+
+##### Containment Test
+
+`in` 연산자를 통해 속해있는지 여부를 확인할 수 있다.
+
+##### *** Identity
+
+`is` 연산자를 통해 동일한 object인지 확인할 수 있다. 
+
+
+(나중에 Class를 배우고 다시 학습)
+
+##### *** Indexing/Slicing
+`[]`를 통한 값 접근 및 `[:]`을 통한 슬라이싱 
+
+(다음 챕터를 배우면서 추가 학습)
+
+```python
+# 문자열끼리 더해봅시다.(합쳐봅시다.)
+"SSAFY" + "는 최고"
+# list끼리 더해봅시다.(합쳐봅시다.)
+[1,2,3]+[4,5,6]
+(1,2,3)+(4,5,6)
+# 문자열안에 특정한 문자가 있는지 확인해봅시다.
+a='SSAFY는 최고'
+if 'S' in a:
+    print("Yes!")
+# list안에 특정한 원소가 있는지 확인해봅시다.
+4 in [1,2,3,4,5]
+# range안에 특정한 원소가 있는지 확인해봅시다.
+45 in range(1,45)
+```
+
+```python
+# is는 맛만 봅시다.
+# 파이썬에서 -5부터 256까지의 id는 동일합니다.
+print(id(-5))
+print(id(256))
+print(id(257))
+print(id(257))
+print(id(-5) is id(256))
+print(id('hi') is id('hi'))
+print(id(0) == id(0))
+print(id(0))
+print(id(0))
+a=0
+b=0
+print(id(a) is id(b))
+print(id(a))
+print(id(b))
+print(a is b)
+```
+
+```python
+# 문자열을 인덱싱을 통해 값에 접근해봅시다.
+'hello'[:-1]
+```
+
+
+
+#### 연산자 우선순위
+
+1. `()`을 통한 grouping
+2. Slicing
+3. Indexing
+4. 제곱연산자 **
+5. 단항연산자 +, - (음수/양수 부호)
+6. 산술연산자 *, /, %
+7. 산술연산자 +, -
+8. 비교연산자, `in`, `is`
+9. `not`
+10. `and`
+11. `or`
+
+-----
+
+
+
+### 형변환(Type conversion, Typecasting)
+
+#### 암시적 형변환(Implicit Type Conversion)
+
+사용자가 의도하지 않았지만, 파이썬 내부적으로 자동으로 형변환 하는 경우이다. 아래의 상황에서만 가능하다.
+
+- bool
+- Numbers (int, float, complex)
+
+```python
+# boolean과 integer는 더할 수 있을까요?
+print(True + 3)
+print(False + 3)
+# int, float, complex를 각각 변수에 대입해봅시다.
+int_number=5
+float_number=5.0
+complex_number=5+3j
+# int와 float를 더해봅시다. 그 결과의 type은 무엇일까요?
+print(type(int_number+float_number))
+# int와 complex를 더해봅시다. 그 결과의 type은 무엇일까요?
+print(type(int_number + complex_number))
+```
+
+
+
+#### 명시적 형변환(Explicit Type Conversion)
+
+위의 상황을 제외하고는 모두 명시적으로 형 변환을 해주어야한다.
+
+- string -> intger : 형식에 맞는 숫자만 가능
+- integer -> string : 모두 가능
+
+암시적 형변환이 되는 모든 경우도 명시적으로 형변환이 가능하다.
+
+- `int()` : string, float를 int로 변환
+- `float()` : string, int를 float로 변환
+- `str()` : int, float, list, tuple, dictionary를 문자열로 변환
+
+`list(), tuple()` 등은 다음 챕터에서 배울 예정이다.
+
+```python
+# integer와 string 사이의 관계는 명시적으로 형변환을 해줘야만 합니다.
+# 1 + '등'
+str(1) + '등'
+# string 3을 integer로 변환해봅시다.
+a='3'
+int(a) + 5
+# string 3.5를 float로 변환해봅시다.
+b='3.5'
+print(int(float(b)))
+# string은 글씨가 숫자일때만 형변환이 가능합니다.
+print(int('하나'))
+# string 3.5를 int로 변환할 수는 없습니다.
+d='3.5'
+int(d)
+# float 3.5는 int로 변환이 가능합니다.
+a='101'
+# 진법 변환 가능
+print(int(a,2))
+print(int(a,8))
+print(int(a,10))
+print(int(a,16))
+```
+
+
+
+
+
+## *** 시퀀스(Senquence) 자료형
+
+`시퀀스`는 데이터의 순서대로 나열된 형식을 나타낸다.
+
+**주의! 순서대로 나열된 것이 정렬되었다라는 뜻은 아니다.**
+
+파이썬에서 기본적인 시퀀스 타입은 다음과 같다.
+
+1. 리스트(list)
+2. 튜플(tuple)
+3. 레인지(range)
+4. 문자열(string)
+5. 바이너리(binary) : 따로 다루지는 않습니다.
+
+
+
+### list
+
+**활용법**
+
+```python
+[value1, value2, value3]
+```
+
+리스트는 대괄호`[]` 를 통해 만들 수 있습니다.
+
+값에 대한 접근은 `list[i]`를 통해 합니다.
+
+```python
+# 빈 리스트를 만들어봅시다.
+lst=[]
+ll=list()
+# 원소를 포함한 리스트를 만들어봅시다.
+location=['강남','강동','강서','강북']
+print(type(location))
+# 첫번째 값에 접근해봅시다.
+location[3]
+```
+
+
+
+### tuple
+
+**활용법**
+
+```python
+(value1, value2)
+```
+
+튜플은 리스트와 유사하지만, `()`로 묶어서 표현합니다.
+
+그리고 tuple은 **수정 불가능(immutable)하고, 읽을 수 밖에 없습니다.**
+
+직접 사용하는 것보다는 파이썬 내부에서 사용하고 있습니다.
+
+```python
+# tuple을 만들어봅시다.
+tp=(1,45,23,6)
+print(tp)
+print(type(tp))
+print(tuple(sorted(tp)))
+# 아래와 같이 만들 수 있습니다.
+x=5
+y=12
+x,y=y,x
+# (x,y)=(y,x)
+tp2=1,2,3,4,5
+print(tp2)
+# 실제로는 tuple로 처리됩니다.
+x,y=(1,2)
+(x,y)=1,2
+```
+
+
+
+### range()
+
+레인지는 숫자의 시퀀스를 나타내기 위해 사용됩니다.
+
+기본형 : `range(n)`
+
+> 0부터 n-1까지 값을 가짐
+
+범위 지정 : `range(n, m)`
+
+> n부터 m-1까지 값을 가짐
+
+범위 및 스텝 지정 : `range(n, m, s)`
+
+> n부터 m-1까지 +s만큼 증가한다
+
+
+
+#### ***시퀀스에서 활용할 수 있는 연산자/함수
+
+| operation  | 설명             |
+| ---------- | ---------------- |
+| x in s     | containment test |
+| x not in s | containment test |
+| s1 + s2    | concatenation    |
+|s * n|n번만큼 반복하여 더하기|
+|s[i]|indexing|
+|s[i:j]|slicing|
+|s[i:j:k]|k간격으로 slicing|
+|len(s)|길이|
+|min(s)|최솟값|
+|max(s)|최댓값|
+|s.count(x)|x의 개수|
+
+
+
+```python
+# 두번째, 세번째 값만 가져와봅시다.
+location=['서울','대구','대전','부산','광주','인천']
+location[1:3]
+location[::-1]
+name = "ssafy"
+name[::-1]
+pal="racecar"
+pal == pal[::-1]
+```
+
