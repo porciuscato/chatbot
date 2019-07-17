@@ -921,3 +921,378 @@ pal="racecar"
 pal == pal[::-1]
 ```
 
+
+
+
+
+### set, dictionary
+
+- `set`과 `dictionary`는 기본적으로 순서가 없습니다.
+
+
+
+#### set
+
+세트는 수학에서의 집합과 동일하게 처리됩니다.
+
+세트는 중괄호`{}`를 통해 만들며, **순서가 없고 중복된 값이 없습니다.**
+
+**활용법**
+
+```python
+{value1, value2, value3}
+```
+
+| 연산자/함수       | 설명   |
+| ----------------- | ------ |
+| a - b             | 차집합 |
+| a \| b            | 합집합 |
+| a & b             | 교집합 |
+| a.difference(b)   | 차집합 |
+| a.union(b)        | 합집합 |
+| a.intersection(b) | 교집합 |
+
+```python
+# set 두개를 만들어서 연산자들을 활용해봅시다.
+set_a={1,2,3,4,5}
+set_b={3,4,5,6,7}
+print(set_a - set_b)
+print(set_a | set_b)
+print(set_a & set_b)
+
+# set은 중복된 값이 있을 수 없습니다.
+set_c={1,1,1,1}
+print(set_c)
+
+# set으로 중복된 값을 제거해봅시다.
+lst=[1,2,2,4,4,4,51,2,3,41]
+print(list(set(lst)))
+```
+
+
+
+#### dictionary
+
+궁극의 자료구조
+
+**활용법**
+
+```python
+{Key1:Value1, Key2:Value2, Key3:Value3, ...}
+```
+
+* 딕셔너리는 `key`와 `value`가 쌍으로 이뤄져있으며, 궁극의 자료구조입니다. 
+* `{}`를 통해 만들며, `dict()`로 만들 수도 있습니다.
+* `key`는 immutable한 모든 것이 가능하다. (불변값 : string, integer, float, boolean, tuple, range)
+* `value`는 `list`, `dictionary`를 포함한 모든 것이 가능하다.
+
+
+
+```python
+# 비어있는 dictionary를 두가지 방법으로 만들어봅시다.
+dict_a={}
+dict_b=dict()
+```
+
+
+
+```python
+# dictionary는 중복된 key는 존재할 수가 없습니다.
+phone_book={
+    '서울':'02',
+    '경기':'031',
+    '인천':'032',
+    '서울':'01'
+}
+phone_book['서울']='333'
+phone_book['서울']='333'
+phone_book['서울']='334'
+```
+
+```python
+# 딕셔너리의 메소드를 활용하여 key를 확인 해볼 수 있습니다.
+print(phone_book.keys())
+print(type(phone_book.keys()))
+list(phone_book.keys())
+
+# 딕셔너리의 메소드를 활용하여 value를 확인 해볼 수 있습니다.
+print(phone_book.values())
+print(type(phone_book.values()))
+list(phone_book.values())[2]
+```
+
+
+
+
+
+## 제어문
+
+제어문(Control of Flow)은 크게 **반복문과 조건문**으로 나눌 수 있다.
+
+
+
+### 조건문
+
+##### 복수 조건문
+
+```python
+# 실습!
+score = int(input("점수를 입력하세요 : "))
+# 여기에 코드를 작성하세요.
+if score >=90:
+    print('A')
+elif score >=80:
+    print('B')
+elif score >=70:
+    print('C')
+elif score >=60:
+    print('D')
+else :
+    print("F")
+```
+
+
+
+#### 조건 표현식 Conditional Expression
+
+```
+true_value if <조건식> else false_value
+```
+
+와 같이 표현식을 작성할 수 있다. 이는 보통 다른 언어에서 활용되는 삼항연산자와 동일하다.
+
+```python
+# 조건 표현식을 사용해봅시다.
+a = int(input("숫자를 입력하세요 : "))
+# 여기에 코드를 작성하세요.
+
+if a>=0:
+    value=a
+else :
+    value=0
+
+value = a if a>= 0 else 0
+```
+
+```python
+num =2
+result = '홀수입니다.' if num %2==1 else '짝수입니다.'
+print(result)
+```
+
+
+
+### 반복문
+
+#### while문
+
+```python
+# 여기에 코드를 작성하세요.
+greeting = input()
+while greeting !="안녕":
+    print('hello!',end=" ")
+    greeting = input("언능 닥치게 해주세요 : ")
+```
+
+
+
+#### for문
+
+```python
+# flowchart를 for문을 통해 코드로 작성해봅시다.
+for i in range(5):
+    print(i)
+print('끝')
+print('i')
+if True:
+    a= '안'
+print(a)
+```
+
+
+
+#### index와 함꼐 for문 활용
+
+```python
+# enumerate()를 활용해서 출력해봅시다.
+lunch = ['짜장면', '초밥']
+for menu in enumerate(lunch):
+    print(menu)
+for idx,menu in enumerate(lunch):
+    print(menu)
+    print(idx)
+print(type(enumerate(lunch)))
+```
+
+##### enumerate 함수
+
+```python
+# enumerate() 함수를 사용하였을 때 어떻게 표현이 되는지 확인해봅시다.
+classroom = [
+    '정의진',
+    '김민지',
+    '김건호',
+    '김명훈'
+]
+list(enumerate(classroom))
+# [(0, '정의진'), (1, '김민지'), (2, '김건호'), (3, '김명훈')]
+```
+
+
+
+##### dictionary 탐색
+
+```python
+friend = {
+    'name' : 'LHB',
+    'age' : 27,
+    'sex' : 'male',
+    'address' : 'Yeok-Sam',
+    'major': 'statistics'
+}
+for item in friend:
+    print(item)
+print()
+for item in friend:
+    print(friend[item])
+    
+  
+print()
+for item in friend.keys():
+    print(item)
+print()
+for item in friend.values():
+    print(item)
+print()
+for item in friend.items():
+    print(item)
+print()
+for key, value in friend.items():
+    print(f"{key}: {value}")
+```
+
+
+
+
+
+### ***break, continue, else
+
+#### break
+
+`break`문은 반복문을 종료하는 표현입니다.
+
+#### continue
+
+`continue`문은 continue 이후의 코드를 수행하지 않고 다음 요소를 선택해 반복을 계속 수행합니다.
+
+#### else
+
+`else`문은 끝까지 반복문을 시행한 이후에 실행됩니다.
+
+(**break를 통해 중간에 종료되지 않은 경우만 실행**)
+
+```python
+# break가 안되는 상황을 만들어봅시다.
+for i in range(3):
+    print(i)
+    if i==100:
+        print(f'{i}에서 break 걸림')
+        break
+else:
+    print("break 안걸림")
+    
+# break가 되는 상황을 만들어봅시다.
+for i in range(3):
+    print(i)
+    if i==2:
+        print(f'{i}에서 break 걸림')
+        break
+else:
+    print("break 안걸림")
+    # else는 작동이 안 됐다.
+```
+
+blood_type을 정리하는 코드
+
+```python
+blood_types = ['A','B','A','O','AB','AB','O','A','B','O','B','AB']
+bt_to_set = set(blood_types)
+result={}
+for i in bt_to_set:
+    result[i]=blood_types.count(i)
+print(result)
+
+# 나는 리스트를 집합으로 형변환을 했는데 집합으로 바꾸면 시간 소요가 많으므로 비추천
+```
+
+고로 다른 사람이 짠 코드를 참고
+
+```python
+blood_types = ['A','B','A','O','AB','AB','O','A','B','O','B','AB']
+blood_dict = dict()
+for blood in blood_types:
+    print(blood_dict.get(blood))
+    if blood_dict.get(blood):
+        blood_dict[blood] += 1
+    else:
+        blood_dict[blood] = 1
+print(blood_dict)
+
+# .get()함수를 사용하면 없는 인덱스의 경우 None을 반환하여 조건식에서 활용할 수 있게 된다.
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+
+# 함수
+
+### 함수의 선언과 호출
+
+```python
+def func(parameter1, parameter2):
+    code line1
+    code line2
+    return value
+```
+
+* 함수 선언은 `def`로 시작하여 `:`으로 끝나고, 다음은 `4spaces 들여쓰기`로 코드 블록을 만듭니다.
+
+* 함수는 `매개변수(parameter)`를 넘겨줄 수도 있습니다.
+
+* 함수는 동작후에 `return`을 통해 결과값을 전달 할 수도 있습니다. (`return` 값이 없으면, None을 반환합니다.)
+
+* 함수는 호출을 `func(val1, val2)`와 같이 합니다.
+
+
+
+##### 내장함수 목록을 직접 보기
+
+```python
+dir(__builtins__)
+```
+
+
+
