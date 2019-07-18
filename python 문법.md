@@ -1,13 +1,5 @@
 # 파이썬과 주피터에 대한 첨언
 
-rm -rf / 
-
-모든 걸 다 지우는 무서운 
-
-gitignore.io
-
-
-
 ```python
 # # 입력받는 법
 # # 맵으로 함
@@ -1295,4 +1287,121 @@ dir(__builtins__)
 ```
 
 
+
+### 함수의 return 
+
+앞서 설명한 것과 마찬가지로 함수는 반환되는 값이 있으며, 이는 어떠한 종류의 객체여도 상관없습니다. 
+
+단, **오직 한 개의 객체만** 반환됩니다. 
+
+- 여러 값을 반환할 수는 있다. 튜플로 반환해서 여러 개로 보일 뿐
+
+함수가 return 되거나 종료되면, 함수를 호출한 곳으로 돌아갑니다.
+
+```python\
+# *** 여러개의 값을 리턴할 수 있는 것 같은데?
+def hello():
+    return "안녕","친구야"
+print(hello())
+# 실제로는 튜플 객체 하나만 리턴한다
+print(type(hello()))
+```
+
+
+
+### 기본값 Default Argument Values
+
+함수가 호출될 때, 인자를 지정하지 않아도 기본 값을 설정할 수 있습니다. 
+
+```python
+def func(p1=v1):
+    return p1
+```
+
+* 단, 기본 매개변수 이후에 기본 값이 없는 매개변수를 사용할 수는 없습니다.
+
+```python
+def greeting(name='john', age):
+    print(f'{name}은 {age}살입니다.')
+# 코드를 실행하면 에러 발생
+```
+
+```python
+def greeting(age, name='john'):
+    print(f'{name}은 {age}살입니다.')
+    
+greeting(1)
+greeting(2, 'json')
+# 이렇게 되면 에러가 발생하지 않음
+```
+
+```python
+greeting(age=24, '철수')
+# 이 코드는 에러
+# positional은 앞으로 몰아서 써야 하고 가변적인 변수들은 뒤에 적어야 한다. 인자들의 배치 문제
+```
+
+
+
+
+
+### 가변 인자 리스트
+
+**활용법**
+
+```python
+def func(*args):
+```
+
+앞서 설명한 `print()`처럼 정해지지 않은 임의의 숫자의 인자를 받기 위해서는 가변인자를 활용합니다. 
+
+가변인자는 `tuple` 형태로 처리가 되며, `*`로 표현합니다. 
+어떤 인수를 넣더라도 받을 수 있게 됨.
+
+```python
+# 가변 인자 예시 (print문은 *obejcts를 통해 임의의 숫자의 인자를 모두 처리합니다.)
+print('안녕','나는','존이야',sep='_')
+```
+
+```python
+# args는 tuple!
+def my_sum(*nums):
+    print(sum(nums))
+
+my_sum(1,3,4,5,6,6,7,8,9)
+```
+
+```python
+# 예시
+def my_max(*args):
+    return max(args)
+my_max(-1, -2, -3, -4)
+########################################
+def my_max(*args):
+    result = 0
+    for idx, val in enumerate(args):
+        if idx == 0:
+            result = val
+        else:
+            if val > result:
+                result = val
+    return result
+my_max(-1, -2, -3, -4)
+```
+
+
+
+
+
+### 정의되지 않은 인자들 처리하기
+
+정의되지 않은 인자들은 `dict` 형태로 처리가 되며, `**`로 표현합니다. 
+
+주로 `kwagrs`라는 이름을 사용하며, `**kwargs`를 통해 인자를 받아 처리할 수 있습니다.
+
+**활용법**
+
+```python
+def func(**kwargs):
+```
 

@@ -111,3 +111,12 @@ ex) `git clone https://github.com/porciuscato/ssafy_chatbot.git`
 
 
 
+
+
+
+
+# 기타
+
+`gir remote -v` : 현재 연결된 레포지토리 확인
+
+`gitignore.io` : 이것의 정확한 역활은?

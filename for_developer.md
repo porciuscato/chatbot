@@ -16,6 +16,12 @@ for problem solving
 
 
 
+#### 라이브러리
+
+알고리즘의 핵심은 문제를 푸는 것. A+ 받으려면 라이브러리 활용법을 배워둬라. 바닥부터 짤 필요 없다.
+
+
+
 #### 자바스크립트
 
 내가 가고 싶은 회사들도 자바스크립트를 보고 뽑음
@@ -99,15 +105,20 @@ Paas
       - introduction to computer science and programming. 
   - cs50
     - 필수 추천 harvard / yale
-  - edwith : 
+  - edwith :
 - 구글의 waymo
 - 지옥에서 온 깃
   - [https://www.opentutorials.org/course/2708 ](https://www.opentutorials.org/course/2708)
-
 - khan academy
   - 중고등학교를 대체하고 있을 정도로 유명
 - https://programmers.co.kr/
   - 가입할 것
+- 파이썬의 끝판왕을 겪고 싶다면 
+  - CS61A
+    - John Denero?
+  - SICP
+    - https://mitpress.mit.edu/sites/default/files/sicp/index.html
+    - 버클리대학에서 파이썬으로 바꾼 버전도 있음
 
 
 
@@ -208,3 +219,19 @@ Paas
 https://deview.kr/2019/cfs
 
 개발 컨퍼런스
+
+
+
+#### world quant
+
+
+
+#### python github
+
+파이썬의 소스코드를 볼 수 있는 방법
+
+
+
+#### 제타위키
+
+백준의 정답을 확인할 수 있다.
