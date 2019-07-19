@@ -1373,10 +1373,13 @@ my_sum(1,3,4,5,6,6,7,8,9)
 
 ```python
 # 예시
+
 def my_max(*args):
     return max(args)
 my_max(-1, -2, -3, -4)
+
 ########################################
+
 def my_max(*args):
     result = 0
     for idx, val in enumerate(args):
@@ -1404,4 +1407,14 @@ my_max(-1, -2, -3, -4)
 ```python
 def func(**kwargs):
 ```
+
+우리가 dictionary를 만들 때 사용할 수 있는 `dict()` 함수는 [파이썬 표준 라이브러리의 내장함수](https://docs.python.org/ko/3.6/library/functions.html) 중 하나이다.
+
+```python
+class dict(**kwarg)
+class dict(mapping, **kwarg)
+class dict(iterable, **kwrg)
+```
+
+
 
