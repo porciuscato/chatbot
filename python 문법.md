@@ -1418,3 +1418,24 @@ class dict(iterable, **kwrg)
 
 
 
+##### 정의되지 않은 인자를 처리해봅시다
+
+```python
+def fake_dict(**kwargs):
+    print(kwargs)
+print(fake_dict(한국어='안녕', 영어='hi', 독일어='Guten Tag'))
+############################################
+def fake_dict(**kwargs):
+    result = []
+    for key, value in kwargs.items():
+        result.append(f'{key}: {value}')
+    print(', '.join(result))
+        
+fake_dict(한국어='안녕', 영어='hi', 독일어='Guten Tag')
+############################################
+```
+
+
+
+#### dictionary를 인자로 넘기기(unpacking arguments list)
+
