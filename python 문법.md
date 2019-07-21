@@ -1389,6 +1389,8 @@ def my_max(*args):
             if val > result:
                 result = val
     return result
+
+# my_max에게 인자로 전해지는 (-1,-2,-3,-4)는 튜플 형식이다.
 my_max(-1, -2, -3, -4)
 ```
 
@@ -1438,4 +1440,192 @@ fake_dict(한국어='안녕', 영어='hi', 독일어='Guten Tag')
 
 
 #### dictionary를 인자로 넘기기(unpacking arguments list)
+
+```python
+# user 검증(유사 회원가입)을 작성해봅시다.
+def user(**kwargs):
+    if kwargs['password']==kwargs['password_confirmation']:
+        print('회원가입이 되었습니다')
+    else :
+        print('비번이 일치하지 않습니다.')
+        
+#########################################
+# 넘겨줄 인자
+my_account = {
+    'username': '홍길동',
+    'password': '1q2w3e4r',
+    'password_confirmation': '1q2w3e4r'
+}
+# 함수 실행시 **를 붙여준다. 붙이지 않으면 실행이 안 된다.
+user(**my_account)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+### URL 편하게 만들기
+
+> url 패턴을 만들어 문자열을 반환하는  `my_url` 함수를 만들어봅시다.
+>
+> 영진위에서 제공하는 일별 박스오피스 API 서비스는 다음과 같은 방식으로 요청을 받습니다.
+
+```
+기본 요청 URL : http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?
+API 페이지에서 회원가입 : http://www.kobis.or.kr/kobisopenapi
+```
+
+* key : 발급받은 키값(abc)
+* targetDt : yyyymmdd
+* itemPerPage : 1 ~ 10 **기본 10**
+
+
+
+
+```
+예시)
+my_url(key='abc', targetDt='yyyymmdd')
+
+api = {
+    'key': '430156241533f1d058c603178cc3ca0e',
+    'targetDt': '20190706'
+}
+my_url(**api)
+# 이 친구를 언팩킹 할 수 있어야 한다.
+
+예시 출력)
+'http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?itemPerPage=10&key=abc&targetDt=yyyymmdd&'
+```
+
+
+
+#### datetime과 timedelta를 활용한 날짜 계산
+
+```python
+from datetime import  date,timedelta
+# isoformat, strftime
+# (date.today() - timedelta(2)).strftime('%Y%m%d')
+# (date.today() - timedelta(2)).isoformat().replace('-','')
+(date(2018,1,1) - timedelta(2)).isoformat().replace('-','')
+```
+
+
+
+
+
+#### URL 검증하기
+
+> 이제 우리는 만들어진 요청 보내기전에 URL을 검증해야합니다. 
+>
+> 앞선 설명을 참고하여 검증 로직을 구현하고 문자열을 반환하세요.
+
+```
+> 아래의 두가지 상황만 만들도록 하겠습니다. <
+
+key가 없으면  '필수 요청변수가 누락되었습니다.'
+key는 있고 targetDt만 없으면, 'url'과 함께 '어제 날짜로 조회하는 url이 생성되었습니다.'
+
+itemPerPage의 범위가 1~10을 넘어가면, '1~10까지의 값을 넣어주세요.'
+```
+
+
+
+
+
+```python
+# 여기에 코드를 작성해주세요
+from datetime import date, timedelta
+def url_checker(key=None, targetDt=None):
+    url = 'http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?key={0}&targetDt={1}'.format(key,targetDt)
+    if key == None:
+        print('필수 요청변수가 누락되었습니다.')
+        return
+    if targetDt == None:
+        print('어제 날짜로 조회하는 url이 생성되었습니다.')
+        targetDt = (date.today() - timedelta(1)).strftime('%Y%m%d')
+        return url
+    print('생성된 url')
+    return url
+# print(url_checker())
+# print(url_checker('430156241533f1d058c603178cc3ca0e'))
+# print(url_checker('430156241533f1d058c603178cc3ca0e','20181215'))
+```
+
+
+
+
+
+
+
+
+
+## 이름공간 및 스코프(Scope)
+
+파이썬에서 사용되는 이름들은 이름공간(namespce)에 저장되어 있습니다.
+그리고, LEGB Rule을 가지고 있습니다. 
+
+***변수에서 값을 찾을 때 아래와 같은 순서대로 이름을 찾아나갑니다.***
+작은 순에서 큰 순으로 
+* `L`ocal scope: 정의된 함수
+* `E`nclosed scope: 상위 함수 
+* `G`lobal scope: 함수 밖의 변수 혹은 import된 모듈
+* `B`uilt-in scope: 파이썬안에 내장되어 있는 함수 또는 속성
+
+
+
+```python
+global_num = 3
+def localscope2():
+    global_num = 5
+    print(f'global_num이 {global_num}으로 설정되었습니다.')
+
+localscope2()
+print(global_num)
+```
+
+
+
+```python
+global_num = 3
+def localscope2():
+    global global_num
+    global_num = 5
+    print(f'global_num이 {global_num}으로 설정되었습니다.')
+
+localscope2()
+print(global_num)
+```
+
+이름공간은 각자의 수명주기가 있습니다.
+
+* built-in scope : 파이썬이 실행된 이후부터 끝까지 
+
+* Global scope : 모듈이 호출된 시점 이후 혹은 이름 선언된 이후부터 끝까지
+
+* Local/Enclosed scope : 함수가 실행된 시점 이후부터 리턴할때 까지
+
+
+
+
+
+## 재귀 함수(recursive function)
+
+재귀 함수는 함수 내부에서 자기 자신을 호출 하는 함수를 뜻한다.
+컴퓨테이셔널 문제를 풀 때 대표적인 아이디어
+그러나 시간이 오래 걸려서 우리가 쓰지는 않을 것
+작은 문제들을 여러 번 반복해서....
+이건 코딩 테스트 문제 풀이용은 아니더라도 컴퓨테이셔널 문제를 푸는 문제다.
+그러나 함수호출이 많이 이루어지기 때문에 코드 작성은 간결해지지만 시간이 오래 걸리기 때문에 실전에 쓰기는 힘들다.
+
+
 
