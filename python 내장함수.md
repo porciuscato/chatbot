@@ -104,7 +104,7 @@ babos.values()
 
 
 
-# 문자열 메소드
+# 1. 문자열 메소드
 
 `.capitalize()`, `title()`, `.upper()` , `lower()`, `swapcase()` , `.join(iterable)` , `split()` , `.replace(old, new[, count])` , `.find(x)` , `.index(x)` , 
 
@@ -184,9 +184,9 @@ b.replace('i','e')
 
 
 
-# 리스트 메소드
+# 2. 리스트 메소드
 
-`.append(x)` , `.extend(iterable)` , `insert(i, x)` ,
+`.append(x)` , `.extend(iterable)` , `insert(i, x)` , `.index(x)` , `.count(x)` , `.sort()` , `reverse()` , `.clear()`
 
 
 
@@ -254,6 +254,125 @@ numbers.pop(0)
 
 ##### ***탐색 및 정렬
 
+`.index(x)` : x 값을 찾아 해당 index 값을 반환합니다.
+
+```python
+numbers = [1, 2, 3, 4, 5]
+print(numbers.index(1))
+```
+
+
+
+`.count(x)` : 원하는 값의 갯수를 확인할 수 있습니다.
+
+```python
+numbers = [1, 2, 5, 1, 5, 1]
+numbers.count(1)
+```
+
+
+
+`.sort()` : `sorted()`와는 다르게 원본 list를 변형시키고, None을 리턴합니다.
+
+`sort`와 `reverse`는 짝꿍이다.
+
+
+
+`reverse()` : 반대로 뒤집습니다. (정렬 아님)
+
+
+
+### 복사
+
+> [pythontutor](http://pythontutor.com/visualize.html#code=lunch%20%3D%20%7B'%EA%B9%80%EB%B0%A5%EC%B2%9C%EA%B5%AD'%3A%20'%EC%B9%98%EC%A6%88%EB%9D%BC%EB%A9%B4',%20'%EA%B9%80%EA%B0%80%EB%84%A4'%3A%20'%EC%A0%9C%EC%9C%A1%EB%B3%B6%EC%9D%8C'%7D%0Aprint%28lunch%29%0Adinner%20%3D%20lunch%0Adinner%5B'%EA%B9%80%EB%B0%A5%EC%B2%9C%EA%B5%AD'%5D%20%3D%20'%EC%B0%B8%EC%B9%98%EA%B9%80%EB%B0%A5'%0Aprint%28lunch%29&cumulative=false&curInstr=0&heapPrimitives=nevernest&mode=display&origin=opt-frontend.js&py=3&rawInputLstJSON=%5B%5D&textReferences=false)를 활용하여 자세하게 알아봅시다.
+
+* 파이썬에서 모든 변수는 객체의 주소를 가지고 있을 뿐입니다. 
+
+```
+num = [1, 2, 3]
+```
+
+* 위와 같이 변수를 생성하면 num이라는 객체를 생성하고, 변수에는 객체의 주소가 저장됩니다.
+
+mutable한 객체들은 주소 복사가 일어난다. 변경 불가능한 자료들은 값 자체가 그대로 복사된다.
+
+리스트가 만들어진 주소가 num에 저장이 된다.
+
+* 변경가능한(mutable) 자료형과 변경불가능한(immutable) 자료형은 서로 다르게 동작합니다.
+
+따라서, 복사를 하고 싶을 때에는 다음과 같이 해야한다.
+
+```python
+# 리스트를 복사해봅시다.
+nums = [1,2,3]
+nums_copy = nums
+nums_copy[0]=0
+# nums_copy는 nums와 동일한 객체를 가리키기 때문에  nums의 값이 변한다.
+print(nums)
+
+# 새로 만들어서 넣으면 주소가 아닌 값 자체가 복사된다.
+num3 = nums[:]
+print(num3)
+nums[0] = 1
+print(nums)
+print(num3)
+
+# 다른 방법으로 복사해봅시다.
+a = [1,2,3]
+# 새로운 리스트를 만드는데 a의 요소를 가져오는 것
+b = list(a)
+print(a)
+print(b)
+```
+
+
+
+그러나 이러한 복사도 역시 **얕은 복사다.(shallow copy)**
+
+```python
+# 2차원 배열을 복사해봅시다.
+# csv의 자료형을 다룰 때 보게 될 것. 배열 안에 배열. 리스트 안에 리스트
+matrix = [
+    [1,2,3],
+    [4,5,6],
+    [7,8,9]
+]
+matrix[0][0]=0
+print(matrix[0])
+
+matrix_copy = matrix[:]
+matrix_copy[0][1]=0
+print(matrix)
+# 여전히 주소가 전달된다.
+```
+
+**깊은 복사(deep copy)**를 하기 위한 방법?
+
+즉 내부에 있는 모든 객체까지 값을 복사하는 것
+
+방법 1) 일일이 코드를 짜면 된다. 그러나 재귀 혹은 반복문을 사용하기 때문에 비용이 많이 든다.
+
+`.deepcopy(iterable)` 사용
+
+```python
+# 깊은 복사를 사용해봅시다.
+import copy
+matrix = [
+    [1,2,3],
+    [4,5,6],
+    [7,8,9]
+]
+
+matrix3 = copy.deepcopy(matrix)
+matrix3[0][0] = 0
+print(matrix)
+print(matrix3)
+# matrix와 matrix3가 다르다는 걸 알 수 있다.
+```
+
+
+
+`.clear()` : 리스트의 모든 항목을 삭제합니다.
 
 
 
@@ -262,7 +381,8 @@ numbers.pop(0)
 
 
 
-# 딕셔너리 메소드
+
+# 3. 딕셔너리 메소드
 
 
 
@@ -270,7 +390,7 @@ numbers.pop(0)
 
 
 
-# 세트 메소드
+# 4. 세트 메소드
 
 
 
