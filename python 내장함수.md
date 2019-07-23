@@ -374,6 +374,34 @@ print(matrix3)
 
 `.clear()` : 리스트의 모든 항목을 삭제합니다.
 
+```python
+temp = []
+# 초기화해서 사용할 수도 있다.
+```
+
+
+
+
+
+### List Comprehension
+
+리스트 내포
+
+```python
+cubic_list = [num**3 for num in numbers ]
+
+result = [(x,y,z) for x in range(1,50) for y in range(x+1,50) for z in range(y+1,50) if (z**2) == (x**2 + y**2)]
+```
+
+
+
+##### 모음제거하기
+
+```python
+words = 'Life is too short, you need python!'
+words = [word for word in words if word not in 'aeiouAEIOU']
+```
+
 
 
 
@@ -384,6 +412,68 @@ print(matrix3)
 
 # 3. 딕셔너리 메소드
 
+`.pop(key[, default])` , `.update()` , `.get(key[, default])` , 
+
+
+
+#### 추가 및 삭제
+
+`.pop(key[, default])` : key가 딕셔너리에 있으면 제거하고 그 값을 돌려줍니다. 그렇지 않으면 default를 반환합니다.
+
+default가 없는 상태에서 딕셔너리에 없으면 KeyError가 발생합니다.
+
+```python
+my_dict = {'apple': '사과', 'banana': '바나나'}
+my_dict.pop('apple')
+my_dict.pop('apple','키 없음')
+```
+
+
+
+`.update()` : 값을 제공하는 key, value로 덮어씁니다. 
+
+```python
+my_dict = {'apple': '사과', 'banana': '바나나', 'melon': '멜론'}
+my_dict.update(apple='사과와아아')
+# {'apple': '사과와아아', 'banana': '바나나', 'melon': '멜론'}
+
+
+```
+
+
+
+`.get(key[, default])` : key를 통해 value를 가져옵니다. 절대로 KeyError가 발생하지 않습니다. default는 기본적으로 None입니다.
+
+```python
+my_dict = {'apple': '사과', 'banana': '바나나', 'melon': '멜론'}
+print(my_dict.get('pineapple'))
+# None
+```
+
+
+
+#### Dictionary Comprehension
+
+```python
+cubic_dict = {x:x**3 for x in range(1,11)}
+```
+
+```python
+dusts = {'서울': 72, '대전': 82, '구미': 29, '광주': 45, '중국': 200}
+
+result = {x:dusts[x] for x in dusts if dusts[x] > 80}
+
+dust_check = {key: '나쁨' if value > 80 else '보통 'for key, value in dusts.items() if value > 80}
+
+dust_check = {key: '매우나쁨' if value > 150 else '나쁨' if value >80 else '보통' for key, value in dusts.items()}
+```
+
+
+
+
+
+
+
 
 
 
@@ -392,7 +482,135 @@ print(matrix3)
 
 # 4. 세트 메소드
 
+`.add(elem)` , `update(*others)` , `.remove(elem)` , `discard(elem)` , `pop()` , `map()`, `zip()`, `filter()`
 
 
 
+#### 추가 및 삭제
+
+`.add(elem)` : elem을 세트에 추가합니다. 
+
+```python
+fruits = {"사과", "바나나", "수박"}
+fruits.add('오렌지')
+```
+
+
+
+`.update(*others)` : 여러가지의 값을 추가합니다. 여기서 반드시 iterable한 값을 넣어야합니다. (for 문을 돌릴 수 있는 것들)
+
+```python
+fruits = {"사과", "바나나", "수박"}
+fruits.update(('천도복숭아','자두'))
+```
+
+
+
+`.remove(elem)` : elem을 세트에서 삭제하고, 없으면 KeyError가 발생합니다. 
+
+```python
+fruits = {"사과", "바나나", "수박"}
+fruits.remove('사과')
+```
+
+`discard(elem)` : x를 세트에서 삭제하고 없어도 에러가 발생하지 않습니다.
+
+```python
+fruits = {"사과", "바나나", "수박"}
+print(fruits.discard('오렌지'))
+# None
+```
+
+
+
+`.pop()` : 임의의 원소를 제거해 반환합니다.
+
+
+
+
+
+#### `map()`, `zip()`, `filter()`
+
+
+
+`map(function, iterable)` : Iterable의 모든 원소에 function을 적용한 후 그 결과를 돌려줍니다. 대표적으로 iterable한 타입 - list, dict, set, str, bytes, tuple, range. return은 map_object 형태로 됩니다.
+
+- 1. 내가 적용하고자 하는 함수명을 적는다. (함수호출 방식이 아니다)
+  2. 적용할 iterable: List, dictionary, range, set, string
+
+```python
+numbers = [1, 2, 3]
+list(map(str,numbers))
+# ['1', '2', '3']
+
+
+def my_cube(x):
+    return x**3
+list(map(my_cube, numbers))
+
+
+chars = ['1', '2', '3']
+list(map(int,chars))
+```
+
+
+
+
+
+`zip(*iterables)`  : 복수 iterable한 것들을 모아준다. 결과는 튜플의 모음으로 구성된 zip object를 반환한다.
+
+```python
+girls = ['jane', 'iu', 'mary']
+boys = ['justin', 'david', 'kim']
+list(zip(girls,boys))
+# [('jane', 'justin'), ('iu', 'david'), ('mary', 'kim')]
+```
+
+- zip은 반드시 길이가 같을 때 사용해야한다. 가장 짧은 것을 기준으로 구성한다.
+
+```python
+num1 = [1, 2, 3]
+num2 = ['1', '2']
+list(zip(num1, num2))
+# [(1, '1'), (2, '2')]
+```
+
+
+
+
+
+***`filter(function, iterable)` : iterable에서 function의 반환된 결과가 참인 것들만 구성하여 반환한다.
+
+```python
+# 다음의 list comprehension과 동일하다.
+numbers = list(range(1,31))
+evens = [num for num in numbers if not num%2]
+
+def even(n):
+    return not n%2
+list(filter(even,numbers))
+```
+
+
+
+
+
+
+
+
+
+##### set으로 comprehension을 하면 재밌는 일이 벌어지는 것
+
+```python
+import requests
+url = 'http://composingprograms.com/shakespeare.txt'
+response = requests.get(url)
+novel = response.text
+words = novel.split(' ')
+print(len(words))
+print(len(set(words)))
+# set_compre = {word for word in words }
+set_compre = {word for word in words if len(word) >= 2 and word == word[::-1]}
+print(set_compre)
+```
 
