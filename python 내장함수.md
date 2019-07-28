@@ -419,7 +419,7 @@ numbers.pop(0)
 
 ##### ***탐색 및 정렬
 
-`.index(x)` : x 값을 찾아 해당 index 값을 반환합니다.
+`.index(x)` : x 값을 찾아 해당 index 값을 반환합니다. 없으면 에러
 
 ```python
 numbers = [1, 2, 3, 4, 5]
@@ -444,6 +444,30 @@ numbers.count(1)
 
 
 `reverse()` : 반대로 뒤집습니다. (정렬 아님)
+
+
+
+
+
+`del ` : 특정 항목 제거
+
+```python
+data = [1,2,3,4,5,6]
+del data[1]
+```
+
+
+
+##### 리스트 내포
+
+```python
+data = [x*y for x in data if x%2 == 1
+       		for y in data if x&2 == 0]
+```
+
+
+
+
 
 
 
@@ -647,7 +671,7 @@ dust_check = {key: '매우나쁨' if value > 150 else '나쁨' if value >80 else
 
 # 4. 세트 메소드
 
-`.add(elem)` , `update(*others)` , `.remove(elem)` , `discard(elem)` , `pop()` , `map()`, `zip()`, `filter()`
+`.add(elem)` , `update(*others)` , `.remove(elem)` , `discard(elem)` , `pop()` , `map()`, `zip()`, `filter()` , `clear()` , `issubset()`
 
 
 
@@ -662,7 +686,7 @@ fruits.add('오렌지')
 
 
 
-`.update(*others)` : 여러가지의 값을 추가합니다. 여기서 반드시 iterable한 값을 넣어야합니다. (for 문을 돌릴 수 있는 것들)
+`.update(*others)` : 여러가지의 값을 추가합니다. 여기서 반드시 iterable한 값을 넣어야합니다. (for 문을 돌릴 수 있는 것들) (리스트의 extend와 비슷)
 
 ```python
 fruits = {"사과", "바나나", "수박"}
@@ -691,6 +715,8 @@ print(fruits.discard('오렌지'))
 `.pop()` : 임의의 원소를 제거해 반환합니다.
 
 
+
+`.clear()` : 모든 원소 제거
 
 
 
@@ -778,4 +804,16 @@ print(len(set(words)))
 set_compre = {word for word in words if len(word) >= 2 and word == word[::-1]}
 print(set_compre)
 ```
+
+
+
+
+
+
+
+# 튜플
+
+각 항목에 대해 인덱스로 접근
+
++ 연산자를 통해 두 항목을 연결하여 새로운 튜플 생성 가능
 
