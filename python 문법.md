@@ -925,7 +925,7 @@ pal == pal[::-1]
 
 #### set
 
-세트는 수학에서의 집합과 동일하게 처리됩니다.
+세트는 수학에서의 집합과 동일하게 처리됩니다. 
 
 세트는 중괄호`{}`를 통해 만들며, **순서가 없고 중복된 값이 없습니다.**
 
@@ -1018,7 +1018,6 @@ list(phone_book.values())[2]
 
 
 <center><img src="container.png", alt="container"/></center>
-
 
 
 
