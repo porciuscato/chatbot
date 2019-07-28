@@ -1017,6 +1017,14 @@ list(phone_book.values())[2]
 
 
 
+<center><img src="container.png", alt="container"/></center>
+
+
+
+
+
+
+
 ## 제어문
 
 제어문(Control of Flow)은 크게 **반복문과 조건문**으로 나눌 수 있다.
@@ -1063,7 +1071,10 @@ if a>=0:
 else :
     value=0
 
+    
+#########################
 value = a if a>= 0 else 0
+#########################
 ```
 
 ```python
@@ -1435,6 +1446,8 @@ def fake_dict(**kwargs):
         
 fake_dict(한국어='안녕', 영어='hi', 독일어='Guten Tag')
 ############################################
+# 키워드 부분에서 스트링을 전달하지 않도록 주의할 것
+# expression(?)은 키워드로 전달될 수 없다.
 ```
 
 
@@ -1457,6 +1470,31 @@ my_account = {
     'password_confirmation': '1q2w3e4r'
 }
 # 함수 실행시 **를 붙여준다. 붙이지 않으면 실행이 안 된다.
+user(**my_account)
+```
+
+- 사실 위에 안 됨. `**kwargs`로 만들고 인자를 넘기려면 일일이 키워드를 검색해야 함
+
+  ​	ex) user(password='1q2w3e4r',name='jin')
+
+- 그렇기에 my_account를 넘기려면 일반 매개변수 쓰듯이 작성하면 된다. 혹은 **my_account를 통해 언팩킹을 해줘야 한다.
+
+```python
+def user(kwargs):
+    if kwargs.get('password')==kwargs.get('password_confirmation'):
+        print('회원가입이 되었습니다')
+    else :
+        print('비번이 일치하지 않습니다.')
+
+my_account = {
+    'username': '홍길동',
+    'password': '1q2w3e4r',
+    'password_confirmation': '1q2w3e4r'
+}
+
+user(my_account)
+# user(username='홍길동',password='1q2w3e4r') # 에러남
+
 user(**my_account)
 ```
 
@@ -1492,8 +1530,16 @@ API 페이지에서 회원가입 : http://www.kobis.or.kr/kobisopenapi
 
 
 
-```
-예시)
+```python
+def my_url(itemPerPage=10, **agrs):
+    base_url = 'http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?'
+    base_url += f'itemPerPage={itemPerPage}&'
+    for key, value in agrs.items():
+        base_url += f'{key}={value}&'
+    return base_url
+
+
+# 예시)
 my_url(key='abc', targetDt='yyyymmdd')
 
 api = {
@@ -1503,8 +1549,8 @@ api = {
 my_url(**api)
 # 이 친구를 언팩킹 할 수 있어야 한다.
 
-예시 출력)
-'http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?itemPerPage=10&key=abc&targetDt=yyyymmdd&'
+# 예시 출력)
+#'http://www.kobis.or.kr/kobisopenapi/webservice/rest/boxoffice/searchDailyBoxOfficeList.json?itemPerPage=10&key=abc&targetDt=yyyymmdd&'
 ```
 
 
@@ -1608,11 +1654,11 @@ print(global_num)
 
 이름공간은 각자의 수명주기가 있습니다.
 
-* built-in scope : 파이썬이 실행된 이후부터 끝까지 
+* `built-in scope` : 파이썬이 실행된 이후부터 끝까지 
 
-* Global scope : 모듈이 호출된 시점 이후 혹은 이름 선언된 이후부터 끝까지
+* `Global scope` : 모듈이 호출된 시점 이후 혹은 이름 선언된 이후부터 끝까지
 
-* Local/Enclosed scope : 함수가 실행된 시점 이후부터 리턴할때 까지
+* `Local/Enclosed scope` : 함수가 실행된 시점 이후부터 리턴할때 까지
 
 
 
