@@ -598,3 +598,22 @@ Token = config("TELEGRAM_TOKEN")
 # webhook
 
 에 대해서도 배웠는데 무슨 말인지 몰라서 나중에 하기로 하자....
+
+
+
+
+
+# time
+
+### sleep
+
+명령 시행시 다소 지연을 두기 위한 방법
+
+```python
+import time
+for _ in range(5):
+    print('hello')
+    print('2초를 기다리고')
+    time.sleep(2)
+```
+
