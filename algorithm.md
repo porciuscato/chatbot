@@ -1643,7 +1643,35 @@ for tc in range(1, 11):
 - 재귀적
 
   ```python
-  ddd
+  def fr(n):
+      if n == 1 : return 1
+      if n == 2 : return 3
+  
+      return fr(n - 1) + 2 * fr(n - 2)
+  
+  
+  def fm(n):
+      if DP[ n ]: return DP[n]
+      DP[ n ] = fm(n - 1) + 2 * fm(n - 2)
+      return DP[n]
+  
+  
+  def fi():
+      dp = [0] * 101
+      dp[1] = 1
+      dp[2] = 3
+  
+      for i in range(2, 101):
+          dp[i] = dp[i-1] + 2 * dp[i-2]
+  
+  DP = [0] * 101
+  DP[1] = 1
+  DP[2] = 3
+  
+  T = int(input())
+  for tc in range(1, T + 1):
+      N = int(input()) // 10
+      print('#%d'%tc, fm(N))
   ```
 
 
@@ -1664,6 +1692,38 @@ for tc in range(1, 11):
 
 3) stack에 남아있냐?
 
+```python
+stack = [0] * 100
+top = -1
+
+def solve():
+    global top
+    for i in range(len(str)):
+        if str[i] == '{' or str[i] == '(':
+            stack[top + 1] = str[i]
+            top += 1
+        elif str[i] == '}' or str[i] == ')' :
+            if top == -1 : return 0
+            if (str[i] == '}' and stack[top] == '(') or (str[i] == ')' and stack[top] == '{'):
+                return 0
+            top -= 1
+
+    if top == -1 : return 1
+    else : return 0
+
+T = int(input())
+for tc in range(1, T+1):
+    s = list()
+    str = input()
+
+    print('#%d'%tc, solve())
+    top = -1
+```
+
+
+
+
+
 
 
 ### 3. 그래프 경로
@@ -1674,18 +1734,71 @@ for tc in range(1, 11):
 
   ```python
   def DFS(v, END):
-    visited = [0] * (V + 1)
-    stack = []
-    stack.append()
-    while stack:
-      t = stack.pop(-1)
-      if not visited[t]:
-        visited[t] = 1
-        if t == END: return 1
-        for i in range(board[t]):
-          if board[t][i] and not visited[i]:
-            stack.push(i)
+      visited = [0] * (V + 1)
+      stack = []
+  
+      stack.append(v)
+  
+      while stack:
+          v = stack.pop(-1)
+  
+          if visited[v] != 1:
+              visited[v] = 1
+              if v == END: return 1
+              for i in range(1, V + 1):
+                  if G[v][i] and not visited[i]:
+                      stack.append(i)
+      return 0
+  
+  
+  T = int(input())
+  for tc in range(1, T + 1):
+      V, E = map(int, input().split())
+  
+      G = [[0] * (V + 1) for _ in range(V + 1)]
+  
+      for _ in range(E):
+          s, t = map(int, input().split())
+          G[s][t] = 1
+      start, end = map(int, input().split())
+  
+      print('#%d' % tc, DFS(start, end))
   ```
+
+- 재귀로 짜면
+
+  ```python
+  def DFSr(v):
+      global found
+      if v == end : found = 1; return
+      visited[v] = True
+  
+      for i in range(1, V + 1):
+          if G[v][i] and not visited[i] and not found:
+              DFSr(i)
+   
+   
+  T = int(input())
+  for tc in range(1, T + 1):
+      V, E = map(int, input().split())
+      visited = [0] * (V + 1)
+      G = [[0] * (V + 1) for _ in range(V + 1)]
+   
+      for _ in range(E):
+          s, t = map(int, input().split())
+          G[s][t] = 1
+      start, end = map(int, input().split())
+  
+      found = 0
+      DFSr(start)
+      print('#%d'%tc, found)
+  ```
+
+  
+
+
+
+
 
 
 
@@ -1693,6 +1806,24 @@ for tc in range(1, 11):
 
 - 스택을 활용해서 만들기
   - 문자들을 하나씩 넣으면서 검사. 이전에 넣은 것과 같으면 pop 하겠다는 것. 다르면 넣음
+
+```python
+stack = [0] * 1000
+top = -1
+
+T = int(input())
+for tc in range(1, T+1):
+    str = input()
+
+    top += 1;    stack[top] = str[0]
+
+    for i in range(1, len(str)):
+        if stack[top] == str[i] : top -= 1
+        else : top += 1;    stack[top] = str[i]
+
+    print('#%d'%tc, top+1)
+    top = -1
+```
 
 
 
@@ -1713,15 +1844,76 @@ for tc in range(1, 11):
 
 - 진입차수가 0인 곳에서부터 출발하면 된다!!
 
+```python
+for tc in range(1, 11):
+    V, E = map(int, input().split())
+    G = [[0] * (V + 2) for _ in range(V + 2)] # G[x][0] 진입차수 G[x][1] 진출 차수
+    stack = [0] * 1000
+    top = -1
+
+    edges = list(map(int, input().split()))
+    for i in range(E):
+        u, v = edges[i*2: i*2 + 2]
+        G[u][1] += 1
+        G[u][G[u][1]+1] = v
+        G[v][0] += 1
+
+    for i in range(1, V + 1):
+        if G[i][0] == 0:
+            top += 1
+            stack[top] = i
+
+    print("#%d"%tc, end=' ')
+
+    while top != -1:
+        x = stack[top]
+        top -= 1
+        print("%d"%x, end=' ')
+        for i in range(G[x][1]):
+            G[G[x][2 + i]][0] -= 1
+            if G[G[x][2 + i]][0] == 0:
+                top += 1
+                stack[top] = G[x][2 + i]
+
+    print()
+```
 
 
-- 스택을 빼기 시작하면 
 
 
 
 #### 2) 재귀로 짜기
 
 - 진입과 진출의 방향을 바꾼다.
+
+```python
+def DFSr(v):
+    for i in range(cnt[v]):
+        if visited[G[v][i]] == 0 : DFSr(G[v][i])
+
+    visited[v] = 1
+    print("%d" % v, end=' ')
+
+for tc in range(1, 11):
+    V, E = map(int, input().split())
+    G = [[0] * (V + 1) for _ in range(V + 1)]
+    visited = [0] * (V + 1)
+    cnt = [0] * (V + 1)
+
+    edges = list(map(int, input().split()))
+    for i in range(E):
+        u, v = edges[i*2: i*2 + 2]
+        G[v][cnt[v]] = u
+        cnt[v] += 1
+
+    print("#%d"%tc, end=' ')
+
+    for i in range(1, V+1):
+        if visited[i] == 0:
+            DFSr(i)
+
+    print()
+```
 
 
 
