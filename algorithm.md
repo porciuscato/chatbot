@@ -2129,3 +2129,9 @@ def quicksort(a, begin, end):
 
 
 
+
+
+# 8월 27일
+
+### magnetic
+
