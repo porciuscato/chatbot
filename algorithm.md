@@ -24,6 +24,7 @@
 
 - 완전탐색에서 가지치기를 해서 연산을 줄일 수 있는가(TSP, 배낭 문제)
   - 백트래킹의 완전탐색을 심도 깊게 이해하고, 거기서 정보를 제어하여 불필요한 연산을 줄이는 것
+  - 필요한 정보를 계속 전달하여 가지치기에 활용하는 것이 어드의 덕목
 
 ### Pro
 
@@ -2096,7 +2097,7 @@ for tc in range(1, 11):
 - 정복(conquer) : 나누고 작은 문제로 각각 해결
 - 통합(combine) : 해결된 해답을 모은다.
 
-
+ 
 
 ### 예제
 
@@ -2123,8 +2124,6 @@ def quicksort(a, begin, end):
     quicksort(a, p+1, end)
 ```
 
-- 
-
 
 
 
@@ -2134,4 +2133,397 @@ def quicksort(a, begin, end):
 # 8월 27일
 
 ### magnetic
+
+
+
+
+
+
+
+# 8월 28일
+
+## 문제 리뷰
+
+### forth
+
+```python
+top = -1
+for x in post_exp:
+  if x in ('+','-','*','/'):
+    if top < 1 : print('error'): break
+    if x  == ''
+```
+
+코드 복사
+
+
+
+
+
+### maze
+
+상태 공간 트리를 정확하게 알아야 한다.
+
+=> 생성하는 과정이 자신의 머리 속에 그려져야 한다. 재귀를 깊은 수준으로 돌아가는 것을 이해해야 한다.
+
+
+
+### 가위바위보
+
+
+
+### 배열 부분 합
+
+-> 순열임을 파악해야 한다! 
+
+`모든 수의 조합을 생성하면 되겠구나` 라는 생각이 들어야 한다. (겹치면 안 되기 때문에 중복 순열, 중복 조합은 아니다.) 그런데 순서가 바뀌면 값이 바뀌기 때문에 `순열`로 해결하면 된다.
+
+백트래킹 : 필요한 정보를 계속 전달하여 가지치기에 활용하는 것이 어드의 덕목
+
+
+
+### 계산기
+
+- 중위 연산을 후위 연산으로 바꾸기 위해선, 연산자를 스택에 쌓아야 한다. 스택에 있는 연산자보다 우선순위가  높을 땐 스택에 쌓고 낮을 땐 밑에 있는 연산자를 뺀다.
+- 후위 연산을 계산하려면 스택에 숫자를 쌓아야 한다. 연산자를 만나면 스택에서 2개를 꺼내 연산한다.
+
+
+
+
+
+## 큐
+
+- 큐의 문제를 해결하기 위해 modula 연산을 통해 인덱스를 통제한다.
+
+```python
+# Q = [0] * 10
+# f = r = -1
+# def isEmpty() :
+# 	return f == r
+#
+# def isFull() :
+# 	return r == len(Q) - 1
+#
+# def enQ(item) :
+# 	global r
+# 	if isFull() : print('Queue_Full')
+# 	else :
+# 		r += 1
+# 		Q[r] = item
+#
+# def deQ():
+#     global f
+#     if isEmpty() : print('Queue_Empty')
+#     else :
+#         f += 1
+#         return Q[f]
+#
+# enQ(1)
+# enQ(2)
+# enQ(3)
+# print(deQ())
+# print(deQ())
+# print(deQ())
+
+
+Q = [0] * 10
+f = r = -1
+r += 1; Q[r] = 1
+r += 1; Q[r] = 2
+r += 1; Q[r] = 3
+
+f += 1; print(Q[f])
+f += 1; print(Q[f])
+f += 1; print(Q[f])
+```
+
+
+
+
+
+## 링크드 리스트
+
+
+
+
+
+## 우선순위 큐
+
+
+
+
+
+
+
+#### 마이쮸 문제
+
+```python
+N = int(input())
+que = []
+que.append(1)
+for i in range(2, N + 1):
+    t = que.pop(0)
+    que.append(t)
+    que.append(i)
+print(que)
+```
+
+
+
+```python
+q = [0] * 100
+f = r = -1
+candis = 20
+studcan = [1] * 20
+
+sn = 1
+nextsn = 2
+
+r += 1; q[r] = sn
+
+while candis > 0:
+    f += 1;  sn = q[f]
+    candis -= studcan[sn]
+    studcan[sn] += 1
+
+    if candis <= 0:
+        print("%d번 학생이 마지막 사탕을 받아간다."%sn)
+        break
+
+    r += 1; q[r] = sn
+    r += 1; q[r] = nextsn
+
+    nextsn += 1
+
+
+#
+# q = [0] * 100
+# f = r = -1
+# candis = 20
+# studcan = [1] * 20
+#
+# sn = 1
+# nextsn = 2
+#
+# r += 1; q[r] = sn
+# print("==>%d번 학생 : 입장하여 줄을 선다."%sn)
+# print("학생 줄 : " , q[f+1:r+1])
+#
+# f += 1; sn = q[f]
+# print("%d번 학생 : 줄에서 나와..."%sn)
+# print("학생 줄 : " , q[f+1:r+1])
+#
+#
+# while candis > 0:
+#     if candis > studcan[sn] : candis -= studcan[sn]
+#     else: studcan[sn] = candis; candis -= studcan[sn]
+#     print("%d번 학생 : 선생님한테 사탕 %d개를 받는다."%(sn, studcan[sn]))
+#     print("===== 남은 사탕의 개수는 %d개다."%candis)
+#     print()
+#     studcan[sn] += 1
+#
+#     if candis <= 0:
+#         print("%d번 학생이 마지막 사탕을 받아간다."%sn)
+#         break
+#
+#     r += 1; q[r] = sn
+#
+#     print("%d번 학생 : 다시 줄을 선다."%sn)
+#     print("학생 줄 : ", q[f + 1:r + 1])
+#     print("==> %d번 학생 : 입장하여 줄을 선다."%nextsn)
+#
+#     r += 1; q[r] = nextsn;
+#     print("학생 줄 : ", q[f + 1:r + 1])
+#
+#     nextsn += 1
+#     f += 1; sn = q[f]
+#     print("%d번 학생 : 줄에서 나와..."%sn)
+#     print("학생 줄 : ", q[f + 1:r + 1])
+```
+
+
+
+
+
+
+
+## BFS Breath First Search
+
+큐에 레벨을 넣어서 처리하자.
+
+
+
+어드 카드 셔플 문제. 중복 순열
+
+
+
+- front 와 rear를 활용한 que BFS
+
+```python
+G = [
+ [ 0, 0, 0 ],
+ [ 2, 3, 0 ],   #정점 1의 인접정점
+ [ 1, 4, 5 ],   #정점 2의 인접정점
+ [ 1, 7, 0 ],   #정점 3의 인접정점
+ [ 2, 6, 0 ],   #정점 4의 인접정점
+ [ 2, 6, 0 ],   #정점 5의 인접정점
+ [ 4, 5, 7 ],   #정점 6의 인접정점
+ [ 3, 6, 0 ]]   #정점 7의 인접정점
+
+q = [0] * 10
+visited = [0] * 8
+
+def BFS(w):
+    f = r = -1
+    r += 1; q[r] = w
+
+    print("%d"%q[r])
+    visited[w] = 1;
+
+    while f != r:
+        f += 1; w = q[f]
+        for i in range(3):
+            if G[w][i] and not visited[G[w][i]]:
+                r += 1; q[r] = G[w][i]
+                print("%d"%q[r])
+                visited[G[w][i]] = 1
+
+BFS(1)
+
+
+```
+
+
+
+
+
+
+
+# 8월 29일
+
+기본 연습문제 3
+
+- 방문처리를 하는 것... 넣을 때 하는 게 아니라, 뺄 때 하라고?? 리던던시가 생긴다는데 이것이 무슨 의미인가...?
+  - 넣는 순간 visited 처리를 해야 리던던시가 안 생기는데??
+- 소소한 것으로부터 동작을 손으로 짜봐야 한다.
+
+
+
+## 조합 생성하기
+
+- N 개의 수 중, M 개를 선택하기
+  - 중복을 피하기 위해 먼저 고른 것보다 무조건 더 큰 수 중에 선택하였다.
+
+```python
+import copy
+
+N, M = map(int, input().split())
+size = M
+count = 0
+
+
+def select(arr, n):
+    global count
+    if n == size:
+        count += 1
+        print('{} : {}'.format(count, arr))
+        return
+    else:
+        depth = n + 1
+        if not arr:
+            for i in range(N): # 모든 범위 중 아무거나 선택
+                ar = copy.deepcopy(arr)
+                ar.append(i)
+                select(ar, depth)
+        else:
+            for i in range(arr[-1] + 1, N):
+                ar = copy.deepcopy(arr)
+                ar.append(i)
+                select(ar, depth)
+
+
+select([], 0)
+```
+
+
+
+## 중복조합 생성하기
+
+- 중복조합 H(n, r) = C(n + r - 1, r)
+
+```python
+
+```
+
+
+
+
+
+
+
+## 순열 생성하기
+
+- N개의 수 중 M개를 선택하되 순서가 중요함
+
+```python
+import copy
+
+N, M = map(int, input().split())
+size = M
+count = 0
+visited = [0] * (N + 1)
+
+
+def select(arr, visit, n):
+    global count
+    if n == size:
+        count += 1
+        print('{} : {}'.format(count, arr))
+        return
+    else:
+        depth = n + 1
+        for i in range(N):
+            if not visited[i]:
+                visited[i] = 1
+                ar = copy.deepcopy(arr)
+                ar.append(i)
+                select(ar, visit, depth)
+                visited[i] = 0
+
+
+select([], visited, 0)
+```
+
+
+
+
+
+## 중복 순열 생성하기
+
+- N^M 만큼 찾기
+
+```python
+import copy
+
+N, M = map(int, input().split())
+size = M
+count = 0
+
+
+def select(arr, n):
+    global count
+    if n == size:
+        count += 1
+        print('{} : {}'.format(count, arr))
+        return
+    else:
+        depth = n + 1
+        for i in range(N):
+            ar = copy.deepcopy(arr)
+            ar.append(i)
+            select(ar, depth)
+
+
+select([], 0)
+```
 
