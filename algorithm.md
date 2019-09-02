@@ -7,9 +7,9 @@
 - 슈도 코드로 먼저 짜서 손으로 직접 돌려봐라
 - 문제를 **꼼꼼히** 읽어라. 처음부터 꼼꼼히 읽어서 한 번에 짜내는 것이 훠어얼씬 빠르다. 디자인은 *한 큐*에
   - 디버깅이 생각보다 오래걸린다.
-
 - 파이썬을 세컨드 언어로 가지는 것
   - 파이썬으로 로직을 간단히 짜본 이후 C언어로 번역
+- 처음과 끝을 생각하자.
 
 
 
@@ -2430,8 +2430,8 @@ def select(arr, n):
         return
     else:
         depth = n + 1
-        if not arr:
-            for i in range(N): # 모든 범위 중 아무거나 선택
+        if not arr: # arr가 비어있을 경우 아무거나 선택
+            for i in range(N): 
                 ar = copy.deepcopy(arr)
                 ar.append(i)
                 select(ar, depth)
@@ -2466,7 +2466,7 @@ select([], 0)
 - N개의 수 중 M개를 선택하되 순서가 중요함
 
 ```python
-import copy
+from copy import deepcopy
 
 N, M = map(int, input().split())
 size = M
@@ -2526,4 +2526,295 @@ def select(arr, n):
 
 select([], 0)
 ```
+
+
+
+
+
+
+
+# 9월 2일
+
+- 큐의 의미. 최단 거리를 구할 수 있는 BFS를 구현할 수 있다.
+
+
+
+## 지난주 문제 풀이
+
+### 회전 문제
+
+모듈라 연산을 사용하면 바로 풀림
+
+
+
+
+
+노드의 거리, 플로이드-워셔 알고리즘
+
+### 노드의 거리
+
+```python
+import sys
+sys.stdin = open('input.txt', 'r')
+
+def BFS(v):
+    f = r = -1
+    r += 1; q[r] = v
+
+    visited[v] = 1;
+
+    while f != r:
+        f += 1; v = q[f]
+        for i in range(1, V + 1):
+            if G[v][i] and visited[i] == 0:
+                if end == i:
+                    return visited[v]
+                r += 1; q[r] = i
+                visited[i] = visited[v] + 1
+    return 0
+
+q = [0] * 1000
+for tc in range(1, int(input()) + 1):
+    V, E = map(int, input().split())
+    visited = [0] * (V + 1)
+    G = [[0] * (V + 1) for _ in range(V + 1)]
+
+    for _ in range(E):
+        s, t = map(int, input().split())
+        G[s][t] = G[t][s] = 1
+    start, end = map(int, input().split())
+
+    print('#%d'%tc, BFS(start))
+
+
+
+
+
+for tc in range(1, int(input()) + 1):
+    V, E = map(int, input().split())
+    dist = [[1000] * V for _ in range( V )]
+
+    for _ in range(E):
+        s, t = map(int, input().split())
+        dist[s - 1][t - 1] = dist[t - 1][s - 1] = 1
+
+    start, end = map(int, input().split())
+
+    for k in range(V):
+        for i in range(V):
+            if i == k : continue
+            for j in range(V):
+                if j == k or j == i: continue
+                dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j])
+
+    if dist[start - 1][end - 1] == 1000:
+        print("#%d" % tc, 0)
+    else:
+        print("#%d"%tc, dist[start - 1][end - 1])
+```
+
+
+
+
+
+### 미로의 거리
+
+```python
+def bfs1():
+    q = []
+
+    maze[sX][sY] = 1
+    q.append([sX, sY, 0])
+
+    while q:
+        x, y, depth = q.pop(0)
+        for dx, dy in (0,1),(0,-1),(1,0),(-1,0):
+            xx = x + dx
+            yy = y + dy
+            if 0 <= xx < N and 0 <= yy < N:
+                if maze[xx][yy] == 3:
+                    return depth
+                if maze[xx][yy] == 0:
+                    maze[xx][yy] = 1
+                    q.append([xx, yy, depth + 1])
+    return 0
+
+
+def bfs():
+
+    visited = [[0] * N for _ in range(N)]
+    q = []
+    q.append([sX, sY])
+    visited[sX][sY] = 0
+
+    while len(q) != 0:
+        x, y = q.pop(0)
+        for dx, dy in (0,1),(0,-1),(1,0),(-1,0):
+            newX = x + dx
+            newY = y + dy
+            if 0 <= newX < N and 0 <= newY < N :
+                if maze[newX][newY] == 3:
+                    return visited[x][y]
+                elif maze[newX][newY] == 0 and visited[newX][newY] == 0:
+                    q.append([newX, newY])
+                    visited[newX][newY] = visited[x][y] + 1
+    return 0
+
+
+for tc in range(1, int(input()) + 1):
+    N = int(input())
+    maze = [[int(x) for x in input()] for _ in range(N)]
+    for i in range(N):
+        if 2 in maze[i]:
+            sX = i
+            sY = maze[i].index(2)
+    print('#%d'%tc, bfs1())
+```
+
+
+
+### 피자굽기
+
+```python
+import sys
+sys.stdin = open('input.txt', 'r')
+
+
+# 원형큐
+def solve1():
+    rq = [0] * (N + 1)
+    f = r = 0
+
+    for pid in range(1, N + 1):
+        rq[pid] = [pid, pizzas[pid - 1]]
+
+    r = N
+    nextp = N
+
+    while f != r:
+        f = (f + 1) % (N + 1)
+        pid, pcheez = rq[f]
+        if pcheez // 2 != 0:
+            pcheez //= 2
+            r = (r + 1) % (N + 1)
+            rq[r] = [pid, pcheez]
+        elif nextp < M:
+            r = (r + 1) % (N + 1)
+            rq[r] = [nextp, pizzas[nextp]]
+            nextp += 1
+
+    return pid + 1
+
+
+# 선형 큐
+def solve():
+    q = [0] * 1000
+    f = r = -1
+
+    for i in range(N): 
+        q[i] = i
+    r += N
+    nextp = N
+
+    while f != r:
+        f += 1
+        pid = q[f]
+        if pizzas[pid] // 2 != 0:
+            pizzas[pid] //= 2
+            r += 1
+            q[r] = pid
+        elif nextp < M:
+            r += 1
+            q[r] = nextp
+            nextp += 1
+
+    return pid + 1
+
+
+
+for tc in range(1, int(input()) + 1):
+    N, M = map(int, input().split())    # 화덕의 크기 N, 피자 개수 M
+    pizzas = list(map(int, input().split()))
+    print('#%d'%tc, solve1())
+```
+
+
+
+
+
+### contact 문제
+
+que에 집어넣을 때 -1을 마커로 활용하여 깊이를 관리
+
+```python
+import sys
+sys.stdin = open('input.txt', 'r')
+
+
+def BFS(v):
+    ans = f = r = -1
+    visited = [0] * 101
+
+    r += 1; q[r] = v
+    visited[v] = 1;
+    r += 1; q[r] = -1       # 같은 레벨 마크
+
+    while True:
+        f += 1; v = q[f]
+        if ans < v : ans = v
+
+        if v == -1:
+            if f == r : return ans
+            r += 1; ans = q[r] = -1
+            continue
+
+        for i in range(G[v][0]):
+            if not visited[G[v][i + 1]]:
+                visited[G[v][i + 1]] = 1
+                r += 1; q[r] = G[v][i + 1]
+
+q = [0] * 200
+for tc in range(1, 11):
+    N, S = map(int, input().split())
+    G = [[0] * 100 for i in range(101)]
+    edges = list(map(int, input().split()))
+
+    for i in range(N//2):
+        u, v = edges[i*2: i*2 + 2]
+        G[u][0] += 1
+        G[u][G[u][0]] = v
+
+    print('#%d'%tc, BFS(S))
+```
+
+
+
+
+
+
+
+## 리스트
+
+- 자료의 논리적인 순서와 메모리 상의 물리적인 순서가 일치하지 않고, 개별적으로 위치하고 있는 원소의 주소를 연결하여 하나의 전체적인 자료구조를 이룬다.
+
+- 링크를 통해 원소에 접근하므로, 순차 리스트에서처럼 물리적인 순서를 맞추기 위한 작업이 필요하지 않다.
+- 자료구조의 크기를 동적으로 조정할 수 있어, 메모리의 효율적인 사용이 가능하다.
+
+
+
+### 삽입정렬
+
+O(n^2)
+
+자료들을 일일이 옮겨야 하는데, 데이터가 많을 경우 링크드 리스트를 사용한다. 조사하는 건 어쩔 수 없다.
+
+
+
+### 병합정렬
+
+O(n log n)
+
+
+
+### 우선순위 큐
 
