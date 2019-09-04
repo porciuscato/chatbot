@@ -2453,12 +2453,86 @@ select([], 0)
 
 
 
+- 조합 코드
+
+```python
+M, N = map(int, input().split())
+arr = [i for i in range(1, M + 1)]
+visited = [0] * M
+count1 = count2 = 0
+
+def combi(lst, depth, last):
+    global count2
+    if depth == N:
+        count2 += 1
+        print('c', count2, ':', lst)
+    else:
+        for i in range(last, M):
+            if not visited[i]:
+                visited[i] = 1
+                ar = lst[:]
+                ar.append(arr[i])
+                combi(ar, depth + 1, i)
+                visited[i] = 0
+combi([], 0, 0)
+```
+
+
+
+- 조합 코드 without visited
+
+```python
+M, N = map(int, input().split())
+arr = [i for i in range(1, M + 1)]
+visited = [0] * M
+count = 0
+
+def combi(lst, depth, last):
+    global count
+    if depth == N:
+        count += 1
+        print('c', count, ':', lst)
+    else:
+        for i in range(last + 1, M):
+            ar = lst[:]
+            ar.append(arr[i])
+            combi(ar, depth + 1, i)
+
+
+combi([], 0, -1)
+```
+
+
+
 ## 중복조합 생성하기
 
 - 중복조합 H(n, r) = C(n + r - 1, r)
 
 ```python
 
+```
+
+- 중복조합 without visited
+
+```python
+M, N = map(int, input().split())
+arr = [i for i in range(1, M + 1)]
+visited = [0] * M
+count1 = count2 = 0
+
+def combi(lst, depth, last):
+    global count2
+    if depth == N:
+        count2 += 1
+        print('c', count2, ':', lst)
+    else:
+        for i in range(last, M):
+            ar = lst[:]
+            ar.append(arr[i])
+            combi(ar, depth + 1, i)
+
+
+combi([], 0, 0)
 ```
 
 
@@ -2852,3 +2926,26 @@ O(n log n)
 
 ### 빙산문제
 
+
+
+
+
+
+
+
+
+# 9월 4일
+
+- sum(sum(a))
+
+  sum의 동작 방식
+
+  sum([1,2,3], default=0)
+
+  => 이차 배열의 합 더하기
+
+  sum(sum(a, [])) => 이차 배열로 된 것을 일차 배열로 만들어서 더할 수 있다.
+
+- max(max(a))
+
+  => max(sum(a, []))
