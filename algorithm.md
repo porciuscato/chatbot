@@ -3,18 +3,77 @@
 ### 코딩 전에 분석부터
 
 - 좁은 것에서부터 확장해 나갈 것
+
 - 코딩부터 하는 건 나쁜 습관
+
 - 슈도 코드로 먼저 짜서 손으로 직접 돌려봐라
+
 - 문제를 **꼼꼼히** 읽어라. 처음부터 꼼꼼히 읽어서 한 번에 짜내는 것이 훠어얼씬 빠르다. 디자인은 *한 큐*에
+  
   - 디버깅이 생각보다 오래걸린다.
+  
 - 파이썬을 세컨드 언어로 가지는 것
+  
   - 파이썬으로 로직을 간단히 짜본 이후 C언어로 번역
+  
 - 처음과 끝을 생각하자.
+
 - 신뢰할 수 있는 단위의 코드를 만들어라.
+  
   - 평탄하게 만들어야 실수를 방지할 수 있다.
+  
 - 평이하게 짜야 디버깅하기도 편하고 나중에 보기도 편하다.
+
 - 문제 범위를 꼼꼼히 읽어라. 최소값도 코너 케이스로 들어갈 수 있다. 
+  
   - 반 이상을 최대 범위로 넣어서 견디는지 확인한다.
+  
+- 코드의 백업본을 반드시 만들어라
+
+- 먼저 완전 검색으로 만들고, 가지치기는 이후에 생각하라
+
+- 랜덤 함수로 tc를 다수 생성하여 에러를 확인하라
+
+  ```python
+  import sys
+  import random
+  sys.stdout = open("input.txt", "w")
+  
+  N = 8
+  arr = [[0] * N for i in range(N)]
+  
+  print(N, N)
+  for i in range(N):
+      for j in range(N):
+          t = random.randint(0, 2)
+          if t == 2 and (i * j) % 10:
+              t = 0
+          elif t == 1 and (i * j) % 5:
+              t = 0
+          print(t, end = ' ')
+      print()
+  ```
+
+  
+
+- 실행시간을 확인해보라
+
+  ```python
+  import time
+  st = time.time() # 코드 시작시 시간을 기록
+  # 코드 진행
+  print(time.time() - st) # 종료 시간에서 시작 시간을 뺌
+  ```
+
+
+
+tc를 맞추고 나서 
+
+완전 검색 하나 짜놓는다
+
+tc 맞는지 확인
+
+random 함수 확인해서 tc를 만들어라. 
 
 
 
@@ -2678,7 +2737,201 @@ visited = [0] * N
 
 
 
+### 순열 중복 라이브러리
 
+```python
+from itertools import permutations
+per = permutations([1,2,3],2)
+print(list(per))
+#[(1, 2), (1, 3), (2, 1), (2, 3), (3, 1), (3, 2)]
+
+from itertools import product
+per = product([1,2,3],repeat=2)
+print(list(per))
+#[(1, 1), (1, 2), (1, 3), (2, 1), (2, 2), (2, 3), (3, 1), (3, 2), (3, 3)]
+
+
+from itertools import combinations
+print(list(combinations([1,2,3],2) ) )
+#[(1, 2), (1, 3), (2, 3)]
+
+from itertools import combinations_with_replacement
+print( list ( combinations_with_replacement([1,2,3],2) ) )
+#[(1, 1), (1, 2), (1, 3), (2, 2), (2, 3), (3, 3)]
+```
+
+
+
+### 순열과 중복. 선생님 조언
+
+```python
+'==================== 순열 ========================='
+def perm_i():
+    for i1 in range(1, N + 1):
+        for i2 in range(1, N + 1):
+            if i2 != i1:
+                print(i1, i2)
+'''
+1 2
+1 3
+2 1
+2 3
+3 1
+3 2
+'''
+
+def perm_r(k):
+    if k == R :
+        print(t[0], t[1])
+    else:
+        for i in range(N):
+            if visited[i]: continue
+            t[k] = i + 1
+            visited[i] = 1
+            perm_r(k + 1)
+            visited[i] = 0
+'''
+1 2
+1 3
+2 1
+2 3
+3 1
+3 2
+'''
+
+
+'==================== 조합 ========================='
+
+
+def comb_i():
+    for i in range(N - 1):
+        for j in range(i + 1, N):
+            print(a[i], a[j])
+
+'''
+1 2
+1 3
+2 3
+'''
+
+def comb_r(k, s):
+    if k == R: print(t[0], t[1])
+    else:
+        for i in range(s, N + (k - R) + 1):
+            t[k] = a[i]
+            comb_r(k + 1, i + 1)
+'''
+1 2
+1 3
+2 3
+
+'''
+
+
+'===================== 중복 순열 ========================='
+
+def pi_i():
+    for i in range(N):
+        for j in range(N):
+            print(a[i], a[j])
+
+'''
+1 1
+1 2
+1 3
+2 1
+2 2
+2 3
+3 1
+3 2
+3 3
+'''
+
+def pi_r(k):
+    if k == R: print(t[0], t[1])
+    else:
+        for i in range(N):
+            t[k] = a[i]
+            pi_r(k + 1)
+
+'''
+1 1
+1 2
+1 3
+2 1
+2 2
+2 3
+3 1
+3 2
+3 3
+'''
+
+
+'====================== 중복 조합 ========================'
+
+def H_i():
+    for i in range(N):
+        for j in range(i, N):
+            print(a[i], a[j])
+
+'''
+1 1
+1 2
+1 3
+2 2
+2 3
+3 3
+'''
+
+def H_r(k, s):
+    if k == R: print(t[0], t[1])
+    else:
+        for i in range(s, N):
+            t[k] = a[i]
+            H_r(k + 1, i)
+'''
+1 1
+1 2
+1 3
+2 2
+2 3
+3 3
+'''
+
+'====================== 호출 ========================'
+N = 3
+R = 2
+a = [1, 2, 3]
+t = [0] * R
+
+
+t = [0] * N
+visited = [0] * N
+print()
+print("순열")
+perm_i()
+print("----------")
+perm_r(0)
+print("----------")
+
+print()
+print('조합')
+comb_i()
+print("----------")
+comb_r(0, 0)
+
+print()
+print("중복 순열")
+pi_i()
+print("----------")
+pi_r(0)
+
+print()
+print("중복 조합")
+H_i()
+print("----------")
+H_r(0, 0)
+```
 
 
 
@@ -2995,7 +3248,106 @@ O(n log n)
 
 
 
-### 빙산문제
+### 완전탐색 부분집합
+
+```python
+def solve(k, sum):
+    global cnt
+    cnt += 1
+    if k == N:
+        if sum == 10:
+            for i in range(1, 11):
+                if a[i] == True:
+                    print(i, end=' ')
+            print()
+    else:
+        k += 1
+        # if sum + k <= 10 :
+        #     a[k] = 1; backtrack(k, sum + k)
+
+        a[k] = 1; backtrack(k, sum + k)
+        a[k] = 0; backtrack(k, sum)
+
+N = 10
+a = [0] * (N + 1)
+
+cnt = 0
+solve(0, 0)
+print("cnt : ", cnt)
+```
+
+
+
+### 퇴사
+
+```python
+
+def solve(k):
+    global ans
+    if k == N:
+        for i in range(N):
+            if Si[i]:
+                for j in range(i + 1, i + Ti[i]):
+                    if j >= N or Si[j] : return
+
+        tsum = 0
+        for i in range(N):
+            if Si[i]:
+                tsum += Pi[i]
+        if tsum > ans : ans = tsum
+
+    else:
+        Si[k] = 1
+        solve(k + 1)
+        Si[k] = 0
+        solve(k + 1)
+
+N = int(input())
+
+Ti = [0] * N
+Pi = [0] * N
+Si = [0] * N
+
+for i in range(N):
+    Ti[i], Pi[i] = map(int, input().split())
+
+ans = 0
+solve(0)
+
+print(ans)
+
+
+
+
+
+
+
+# def solve(k, s):
+#     global ans
+#     if k == N:
+#         ans = max(ans, s)
+#         return
+#
+#     if(k + Ti[k] <= N):
+#         solve(k + Ti[k], s + Pi[k])
+#
+#     solve(k + 1, s)
+#
+# N = int(input())
+#
+# Ti = [0] * N
+# Pi = [0] * N
+#
+# for i in range(N):
+#     Ti[i], Pi[i] = map(int, input().split())
+#
+# ans = 0
+# solve(0, 0)
+#
+# print(ans)
+```
+
+
 
 
 
@@ -3021,6 +3373,137 @@ O(n log n)
 
   => max(sum(a, []))
 
+### 연구소
+
+```python
+def virus_infact():
+    q = []
+    for i in range(virus_cnt):
+        x, y = virus_pos[i]
+        q.append((x,y))
+
+        while q:
+            x, y = q.pop(0)
+            for dx, dy in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+                xx = x + dx
+                yy = y + dy
+                if not (0 <= xx < N and 0 <= yy < M):
+                    continue
+                if mat[xx][yy] == 0:
+                    mat[xx][yy] = 2
+                    q.append((xx, yy))
+
+
+def count_safe_area():
+    global ans
+    tans = sum(mat, []).count(0)
+    if ans < tans:
+        ans = tans
+        
+def solve(k):
+    arr = []
+    for i in range(safe_cnt - 2):
+        arr.append(i)
+        for j in range(i + 1, safe_cnt - 1):
+            arr.append(j)
+            for k in range(j + 1, safe_cnt):
+                arr.append(k)
+
+                for i in range(3):
+                    x, y = safe_pos[arr[i]]
+                    mat[x][y] = 1
+
+                virus_infact()
+                count_safe_area()
+
+                for ii in range(N):
+                    for jj in range(M):
+                        mat[ii][jj] = copy_mat[ii][jj]
+
+                arr.pop(-1)
+            arr.pop(-1)
+        arr.pop(-1)
+
+
+
+
+
+N, M = map(int, input().split())
+
+mat = [0] * N
+for i in range(N):
+    mat[i] = list(map(int, input().split()))
+
+
+copy_mat = [[0] * M for i in range(N)]
+virus_cnt = 0
+virus_pos = [0] * 10
+safe_cnt = 0
+safe_pos = [0] * (N * M)
+for i in range(N):
+    for j in range(M):
+        if mat[i][j] == 2:
+            virus_pos[virus_cnt] = (i, j)
+            virus_cnt += 1
+        elif mat[i][j] == 0:
+            safe_pos[safe_cnt] = (i, j)
+            safe_cnt += 1
+        copy_mat[i][j] = mat[i][j]
+
+
+ans = 0
+solve(0)
+print(ans)
+```
+
+
+
+```python
+def virus_infact():
+    q = []
+    for i in range(virus_cnt):
+        x, y = virus_pos[i]
+        q.append((x,y))
+
+        while q:
+            x, y = q.pop(0)
+            for dx, dy in ((0, 1), (0, -1), (1, 0), (-1, 0)):
+                xx = x + dx
+                yy = y + dy
+                if not (0 <= xx < N and 0 <= yy < M):
+                    continue
+                if mat[xx][yy] == 0:
+                    mat[xx][yy] = 2
+                    q.append((xx, yy))
+
+
+def count_safe_area():
+    global ans
+    tans = sum(mat, []).count(0)
+    if ans < tans:
+        ans = tans
+        
+
+def solve(k, s):
+
+    if k == 3:
+        for i in range(3):
+            x, y = safe_pos[a[i]]
+            mat[x][y] = 1
+
+        virus_infact()
+        count_safe_area()
+
+        for i in range(N):
+            for j in range(M):
+                mat[i][j] = copy_mat[i][j]
+
+    else:
+        for i in range(s, safe_cnt + (k - 3) + 1):  #N + (k - R) + 1
+            a[k] = i
+            solve(k + 1, i + 1)
+```
+
 
 
 
@@ -3029,5 +3512,13 @@ O(n log n)
 
 ## 문제풀이
 
-### 정고니의 단조증가하는 수
+### 
+
+
+
+
+
+# 9월 6일
+
+
 
