@@ -916,3 +916,394 @@ settings.py가 바뀌면 서버를 껐다 켜주자
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# 9월 16일
+
+DB Relation
+
+템플릿 코드 빌드업
+
+
+
+Board Template CRUD
+
+```
+게시판
+0. Project BOARD -> app posts
+
+1. Model Post
+- title
+- content
+- created_at & updated_at
+
+2. url
+- /create
+- /detail/{}
+- /index
+- /update/{}
+- /delete
+```
+
+- 기본 템플릿은 이곳에
+
+  https://lab.ssafy.com/02/seoul01/crud
+
+
+
+- 항상 DB부터 만들어줘야 한다.
+
+
+
+
+
+## 댓글 달기
+
+## DB relation
+
+작성할 땐...
+
+- form으로 만든다.
+
+  ```html
+  <form action="m">
+      <input type="text">
+      <input type="submit">
+  </form>
+  ```
+
+  댓글들을 써나가기 위한 방법은?
+
+  내용만 들어가고, 로그인 기능 추가되면 작성자도 들어감
+
+  댓글은 전체 게시판에 뿌리는 글이 아니라, 특정 글에만 달려 있는 글 -> 그러면 데이터 베이스를 어떻게 구성해야 할까?
+
+  그냥 만들어도 된다.
+
+  ```python
+  class comment(models.Model):
+      content = models.CharField(max_length=300)
+      created_at = models.DateTimeField(auto_now_add=True)
+      updated_at = models.DateTimeField(auto_now=True)
+  ```
+
+  
+
+- 테이블을 만들 땐, 클래스 하나가 시트 하나. 지금처럼 만들게 되면 시트가 2개 생기게 되는 셈
+
+  
+
+
+
+#### 관계
+
+세상 모든 건 4가지 관계로 설명이 가능하다?
+
+DB는 이걸로 표현할 수 1
+
+1. 관계없음의 관계
+2. 1대1 관계 
+   - 하나의 레코드와 하나의 칼럼만이 관계
+   - 하나를 찾으면 다른 하나를 바로 찾을 수 있음
+     - ex) 이름-주민번호, 암호화해시
+3. 1대 N | one to many
+   - 대다수의 관계
+     - ex) 싸피 2기 1반에는 많은 학생들이 있음, 댓글(하나의 글에 많은 댓글들이 관계맺음)
+
+4. N 대 N | many to many
+   - 1대 N을 활용해서 만든다. 이것만 잘하면 활용 가능
+
+
+
+#### 시각적으로 이걸 보자
+
+실제 데이터베이스 상에 표현되는지 보자
+
+| id   | 이름 | 전공 | 이메일 | 전화번호 | 반   |
+| ---- | ---- | ---- | ------ | -------- | ---- |
+|      |      |      |        |          |      |
+
+이런 식으로 반을 때려박았는데, 반에 대한 정보도 다른 시트에 만들 수 있다면?
+
+
+
+| 기수 | 반정보 | 담당강사 | 소속학생 | 강의실 | 지역 |
+| ---- | ------ | -------- | -------- | ------ | ---- |
+| 2    | 1      | 강동주   |          |        |      |
+
+이 둘이 따로 있으면 뭔가 낭비가 아닌가 싶은 생각...
+
+하나 고치면 모두 고쳐야하는 불편함...
+
+
+
+#### ---
+
+**특정 id를 기반으로 어느 레코드와 관계가 있는지 표현할 수 있다. **
+
+그냥 칼럼에 다 때려 박으면 중복되는 정보가 반복되어 정보의 낭비가 발생한다. 관계만 나타내면 되는 셈
+
+-> 많은 쪽에서 자신이 속한 부분의 정보를 가지고 있으면 비용이 엄청나게 줄어든다.
+
+​	ex) 1반 학생들이 모두 1반이라는 정보를 가진다.
+
+- 1대 N의 관계에서는... 
+  - 1의 입장 : has-many
+  - many의 입장 : bleongs-to
+  - 관계를 명확하게 하기 위해선, 포함되는 관계인지 봐야한다.
+  - 그런 관계에서는 N 쪽에 칼럼이 하나 추가되면서 자신의 소속 정보를 가진다.
+    - 반이 학생 정보를 가질 수도 있지만 이는 비효율적이다.
+- pk, fk(외래키. foreign key) 
+  - 각각의 반 정보는 pk 이고, 학생들이 가지고 있는 반에 대한 정보는 fk다.
+  - fk를 참조하여 pk의 정보에 접속한다.
+
+
+
+#### ---
+
+그러므로 댓글이 자신이 속한 글의 정보를 가지고 있어야 한다.
+
+```python
+class comment(models.Model):
+    content = models.CharField(max_length=300)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    # 이렇게 1에 대한 정보를 가지고 있어야하는데
+    post_id = 
+    # 우리가 직접 만드는게 아니라 장고에게 만들라고 시킬 예정
+```
+
+
+
+장고에게 시키는 코드가
+
+`models.ForeignKey()`
+
+```python
+class comment(models.Model):
+    content = models.CharField(max_length=300)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    # 어떤 모델(테이블)에 꽂을 건지, on_delete=
+    post = models.ForeignKey()
+    # 나중에는 models.OneToOne()
+    # models.ManyToMany()
+```
+
+```python
+post = models.ForeignKey(Post, on_delete=models.CASCADE)
+```
+
+- on_delete는? 만약 반이 날아가게 되었을 때 이 데이터의 거처를 처리하는 것. 
+  - 가령 싸피 1반이 사라지게 된다면... 만약 특정 글이 사라지게 된다면 댓글들을 어떻게 해야하는가? 
+    - 가장 좋은 건, 같이 지우는 것. 대댓글도 있을텐데... 최상위가 사라진다면 모두다 사라지게 만드는 것
+
+
+
+모델 사진을 바꿨기 때문에 `makemigrations`를 해줘야
+
+`python manage.py makemigrations`
+
+`python manage.py migrate`
+
+
+
+- `python manage.py sqlmigrate posts 0002`
+
+  - 방금 우리가 만든 친구가 실제 sql로 어떻게 나오는지 볼 수 있음
+
+    ```
+    CREATE TABLE "posts_commnent" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, "content" varchar(300) NOT NULL, "created_at" datetime NOT NULL, "updated_at" datetime NOT NULL, "post_id" integer NOT NULL REFERENCES "posts_post" ("id") DEFERRABLE INITIALLY DEFERRED);
+    CREATE INDEX "posts_commnent_post_id_3b6edf5e" ON "posts_commnent" ("post_id");
+    COMMIT;
+    ```
+
+    - post_id 가 자동으로 생성되어 있음!!
+
+- 예전에 shell 통해서 DB의 내용을 조작
+
+  `python manage.py shell`
+
+  models.py 에서 Post와 Comment를 한 번에 가져오려면?
+
+  `pip list`로 python extension을 보자
+
+  `pip install django-extensions`
+
+  - 외부에서 만든 앱을 settings.py에 알려줘야 함
+
+  ```python
+  INSTALLED_APPS = [
+      'django_extensions',
+      'posts',
+      'django.contrib.admin',
+      'django.contrib.auth',
+      'django.contrib.contenttypes',
+      'django.contrib.sessions',
+      'django.contrib.messages',
+      'django.contrib.staticfiles',
+  ]
+  ```
+
+  shell에서
+
+  `python manage.py shell_plus`
+
+
+
+​	Post.objects.all()
+
+​	Post.objects.last() : 얘는 마지막 객체가 바로 나옴
+
+​	Post.objects.last().title
+
+​	Post.objects.last().content
+
+​	
+
+Comment의 post에는 뭘 넣어줘야 할까? 
+
+2를 바로 때려 박자, 'Post' instance를 가지고 있어야한다고 나옴
+
+```
+post_2 = Post.objects.first()
+```
+
+```
+comment.objects.create(content='first', post=post_2)
+```
+
+
+
+
+
+```
+comm = comment.objects.last()
+```
+
+```
+comm.post
+를 치니까 글 객체가 나왔다!!
+# <Post: Post object (1)>
+```
+
+```
+comm.post.title
+comm.post.content
+얘가 속해있는 글의 정보를 볼 수 있다!!!
+```
+
+=> 한쪽에서 다른 쪽 정보에 접근할 수 있다는 것!! 
+
+수정도 가능하다!!
+
+```
+comm.post.content = 'modified'
+comm.post.save()
+comm.post.content
+# 'modified'
+```
+
+
+
+----
+
+여기까진 comment 입장에서 글을 수정한 것
+
+
+
+이젠 반대로??
+
+해당하는 글이 가지고 있는 모든 comment를 보여주기 위해.... 글의 입장에서 댓글을 보도록 하자
+
+```
+post_2.commnent_set
+# 네가 가지고 있는 커맨트 집합을 전부 보여달라는 것
+```
+
+```
+post_2.commnent_set.all()
+# <QuerySet [<Commnent: comment object (1)>]>
+```
+
+**메타 프로그래밍 영역**(메소드 명을 런타임 중에 생성하는 것!!!!)
+
+```
+post_2.commnent_set.last()
+# 뽑은 애들 중에 마지막 애로 접근이 가능하다.
+```
+
+```
+post_2.commnent_set.last().content
+# 이렇게 하면 댓글이 나온다!!
+```
+
+뫼비우스의 띠도 가능ㅋㅋㅋㅋㅋㅋ
+
+```
+post_2.commnent_set.last().post.commnent_set.last().content
+```
+
+
+
+```html
+{% for comment in comments %}
+	<p>{{ comment.content }}</p>
+{% endfor %}
+```
+
+```python
+def detail(request, pk):
+    # pk라는 id를 가진 글을 찾아와 보여줌
+
+    # 해당글에 달려있는 모든 댓글을 보여줌
+    # Comment.objects.get(post_id=pk)
+    post = Post.objects.get(pk=pk)
+    comments = post.comment_set.all()
+    # comments = reversed(post.comment_set.all())
+    context = {
+        'post': post,
+        'comments' : comments,
+    }
+    return render(request, 'posts/detail.html', context)
+```
+
+
+
+
+
+```python
+def create_comment(request, pk):
+    # 댓글 작성 후 detail.html로 redirect
+    Comment.objects.create(
+        content=request.GET.get('content'),
+        post=Post.objects.get(pk=pk)
+    )
+    return redirect('posts:detail', pk)
+```
+
+```html
+<form action="/posts/{{ post.pk }}/create_comment/">
+    <input type="text" name='content'>
+    <input type="submit">
+</form>
+```
+
+
+
