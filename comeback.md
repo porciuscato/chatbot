@@ -529,7 +529,7 @@ Git에서 여기저기 이동할 때 커밋의 해시를 사용하는 방법은 
 상대 커밋은 강력한 기능인데, 여기서 두가지 간단한 방법을 소개하겠습니다.
 
 - 한번에 한 커밋 위로 움직이는 `^`
-- 한번에 여러 커밋 위로 올라가는 `~<num>`
+- 한번에 여러 커밋 위로 올라가는 `~<num>` (틸드 연산자)
 
 먼저 캐럿 (^) 연산자 부터 알아보겠습니다. 참조 이름에 하나씩 추가할 때마다, 명시한 커밋의 부모를 찾게 됩니다.
 
@@ -554,6 +554,16 @@ git checkout master^
 ```
 
 마스터 브랜치의 부모로 바로 HEAD를 옮길 수 있습니다.
+
+
+
+
+
+## 7. Code 옮기기
+
+
+
+
 
 
 
@@ -1306,4 +1316,454 @@ def create_comment(request, pk):
 ```
 
 
+
+
+
+
+
+# 9월 17일
+
+댓글의 수를 나타내기
+
+```html
+{{ comments | length }}
+{% for comment in comments %}
+<div class="input-group">
+    <table class="table">
+        <tr>
+            <td>{{ comment.content }}</td>
+            <td>
+                <a class="btn btn-outline-info" href="/posts/{{ comment.id }}/update/">수정</button>
+                <a class="btn btn-outline-danger" href="/posts/{{ post.id }}/delete_comment/{{ comment.id }}">삭제</button>
+            </td>
+        </tr>
+    </table>
+</div>
+{% endfor %}
+```
+
+
+
+- DTL if 를 활용하여 댓글이 없는 경우 커버하기
+
+  ```html
+    {% if comments.counts %}
+      <p>{{ comments | length }}개의 댓글이 있습니다.</p>
+    {% else %}
+      <p>댓글 부탁부탁</p>
+    {% endif %}
+    {% for comment in comments %}
+    <div class="input-group">
+      <table class="table">
+        <tr>
+          <td>{{ comment.content }}</td>
+          <td>
+            <a class="btn btn-outline-info" href="/posts/{{ comment.id }}/update/">수정</button>
+            <a class="btn btn-outline-danger" href="/posts/{{ post.id }}/delete_comment/{{ comment.id }}">삭제</button>
+          </td>
+        </tr>
+      </table>
+    </div>
+    {% endfor %}
+  ```
+
+  
+
+
+
+### 사진 업로드 하기
+
+```
+pip install pillow
+```
+
+어플을 깔기만 한다고 되는 것이 아님.
+
+setting.py installed_apps에 알려줘야함
+
+그런데 pillow는 안 알려줘도 됨
+
+
+
+원래 데이터 조직은 모델이 해야함.
+
+View는 그저 중간자 역할을 해줘야함. 
+
+모델에 관련된 데이터라고 해서 Meta class를 정의할 수 있음
+
+```python
+class Post(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+```
+
+클래스 안에 클래스를 정의하는 고급 기법
+
+
+
+html안에서도 meta 데이터를 넣어둠.
+
+이런 정보를 통해 자료에 대한 정보를 전달할 수 있음
+
+
+
+https://docs.djangoproject.com/en/2.2/ref/models/options/
+
+```python
+class Post(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-pk']
+```
+
+Meta는 하위클래스처럼 보이지만, ORM 내부에서는 옵션들을 조작하는 용도로 쓰임
+
+Meta는 ORM 기준으로 옵션을 설정하는 것이기 때문에 migrate를 할 필요 없음(DB에는 영향을 주지 않는다. ORM을 건드릴 뿐)
+
+
+
+- 이미지를 넣어보자
+
+이미 우리 테이블이 있는 상태에서 칼럼을 추가하는 것은 위험. 
+
+이미지를 넣으면 이미지에 대한 주소가 들어감. url이 아니라 이미지를 우리 앱 안에 저장하고, 그 이미지의 주소를 넣게 됨.
+
+새로 칼럼을 추가하면 어떻게 처리할지 장고가 우리에게 물어봄. NULL을 할지... default를 줄지...
+
+그런데 DB를 날리는 게 편하다.
+
+- DB를 날리자.
+
+  db.sqlite3를 그냥 지우면 된다.
+
+  0001, 0002도 지워주자
+
+- 포스트의 칼럼을 추가하자
+
+  ```python
+  class Post(models.Model):
+      title = models.CharField(max_length=100)
+      content = models.TextField()
+      image = models.ImageField(blank=True)
+      created_at = models.DateTimeField(auto_now_add=True)
+      updated_at = models.DateTimeField(auto_now=True)
+  
+      class Meta:
+          ordering = ['-pk']
+  ```
+
+  blank=True는 이미지가 없어도 된다는 뜻
+
+- DB의 청사진을 뽑고
+
+  ```
+  python manage.py makemigrations
+  ```
+
+- 실제 DB에 적용
+
+  ```
+  python manage.py migrate
+  ```
+
+
+
+- 파일을 넣을 수 있는 란을 만들자
+
+  ```html
+  <div class="form-group">
+      {% csrf_token %}
+      <label for="title">제목</label>
+      <input type="text" class="form-control" id="title" name="title" placeholder="제목을 입력해 주세요.">
+      <label for="content">내용</label>
+      <textarea id="content" name="content" class="form-control" rows="10"></textarea>
+      <input type="file" name='image'>
+  </div>
+  ```
+
+- form은 원래 텍스트를 처리하는데, 파일을 받도록 만들기 위해 form에 enctype 옵션을 줘야한다.
+
+  ```html
+  <form action="{% url 'posts:create' %}" method="POST" enctype="multipart/form-data">
+  ```
+
+  아무것도 안 쓰면 application이 기본값
+
+  text/plain은 인코딩한 상태로 보내지 않아서 조심해야한다.
+
+  - multipart/form-data? '파일 데이터 올린다' 라는 말과 같다.
+
+- 그런데 모든 파일이 다 올라가므로, 우리가 원하는 타입만 들어가게 만들 수 있다. `accept="image/*"`
+
+  ```html
+  <input type="file" name='image' accept="image/*">
+  ```
+
+- views.py를 수정해주자 request.FILES.get
+
+  ```python
+  def create(request):
+      if request.method == 'POST':
+          Post.objects.create(
+              title = request.POST.get('title'), 
+              content = request.POST.get('content'), 
+              image = request.FILES.get('image')
+          )
+          return redirect('home')
+      else:
+          return render(request, 'posts/create.html')
+  ```
+
+- detail 페이지도 수정해주자
+
+  ```html
+  <h1>{{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+    <img src="{{ post.image }}" alt="">
+    <p>{{ post.created_at }}</p>
+    <p>{{ post.updated_at }}</p>
+  ```
+
+  그런데도 안 보인다!!
+
+
+
+
+
+- 사진이 root에 저장이 되는데
+
+  우리는 저장될 위치를 지정해줘야한다. 지금은 파일명만 달랑 들어가있다. 그 위치를 고스란히 DB에 저장해줘야 한다.
+
+  기본 설정을 바꿔줘야 한다.
+
+- 이미지 업로드의 설정을 바꿔줘야.... settings.py에 MEDIA_URL 변수를 새로 만들어낸다.
+
+  ```python
+  MEDIA_URL = '/media/'
+  ```
+
+  설정을 해주지 않으면 기본 위치는 `''` (root. 아무 것도 없는 상태)
+
+  지금은 위치를 일부러 바꿔준 것
+
+  - 실제 파일 저장소의 경로를 지정해줘야 한다.
+
+  ```python
+  # 1. 실제 파일 저장소의 경로를 지정
+  MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+  
+  # 2. 업로드된 파일의 주소(URL을 만들어줌), default: ''
+  MEDIA_URL = '/media/'
+  ```
+
+  이 덕분에 media 폴더 아래 사진이 저장이 됨
+
+
+
+- 속성값으로 url을 지정해줘야 경로를 알 수 있다.
+
+```
+  <img src="{{ post.image.url }}" alt="">
+```
+
+
+
+- 그러나 우리 문지기는 /media를 모르기 때문에 메인 문지기에게 알려줘야함
+
+  -  /media/ 들어오는 요청들을 통과시켜주세요. 라고 말하고 싶은 것
+  - `static()` 을 사용해야 함
+
+  ```python
+  from django.conf.urls.static import static
+  ```
+
+  먼저 static을 알려주고
+
+  static을 설정해줘야 하는데
+
+  이걸 쓰기 위해선 import를 해줘야 함
+
+  ```python
+  from django.conf import settings
+  ```
+
+  
+
+- 결국 이렇게 만들어줘야 함
+
+  `static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),`
+
+  ```python
+  from django.contrib import admin
+  from django.urls import path, include
+  from posts import views
+  from django.conf.urls.static import static
+  from django.conf import settings
+  
+  urlpatterns = [
+      path('admin/', admin.site.urls),
+      path('', views.index, name='home'),
+      path('posts/', include('posts.urls')),
+      static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
+  ]
+  ```
+
+  
+
+사실 이렇게 해도 안 됨
+
+이렇게 해야 함
+
+```
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', views.index, name='home'),
+    path('posts/', include('posts.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+```
+
+혹은
+
+```python
+from django.contrib import admin
+from django.urls import path, include
+from posts import views
+from django.conf.urls.static import static
+from django.conf import settings
+
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('', views.index, name='home'),
+    path('posts/', include('posts.urls')),
+] 
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+```
+
+
+
+이렇게 하면 드디어 됨
+
+이것이 싱글 이미지 파일 업로드
+
+
+
+이걸 shell_plus로 확인 가능
+
+```
+python manage.py shell_plus
+post = Post.objects.first()
+post.image
+등등의 명령으로 처리
+```
+
+
+
+
+
+자잘한 디테일을 프레임워크가 다 처리를 해주기 때문에, 기능 중심의 개발에 집중할 수 있다.
+
+ 
+
+
+
+- 그런데 이미지 파일을 안 올리면 에러 생김
+
+  이미지 없을 때 default 이미지를 설정해줄 수 있다.
+
+  ```
+  mv ~/Downloads/no_image.png ./media/
+  다운받은 사진을 옮겨오기
+  ```
+
+  ```html
+  {% if post.image %}
+      <img src="{{ post.image.url }}" alt="no_image" heigth=100 weight=100>
+    {% else %}
+      <img src="/media/no_image.png" alt="">
+    {% endif %}
+  ```
+
+  
+
+
+
+- static file이 굉장히 무겁기 때문에 지금처럼 media 폴더 안에 만들지는 않을 것
+
+  요청이 오면 빨리 응답을 줘야하는데, 너무 커지면 무거워짐
+
+  static 서버를 따로 만들게 됨(파일 전용 서버를 운영해야..)	
+
+  메인 서버에게 요청을 보내고 이미지 파일은 다른 서버를 통해 받는다.
+
+  
+
+
+
+
+
+++ 다음주 프로젝트?
+
+either.io
+
+http://pythonstudy.xyz/
+
+
+
+- favicon : 16 x 16 image
+
+  https://www.favicon-generator.org/
+
+  STATIC_URL = '/static/'
+
+  - 스태틱 파일은 이미 url이 이렇게 잡힌 게 있다.
+
+    특정 스태틱 파일들을 저장해놓고, 저 스태틱으로 접근하게 만들어야한다.
+
+    그러면 어디에 파일들을 놔줘야하는가?
+
+  - 장고의 스태틱 파일의 관례
+
+    https://docs.djangoproject.com/en/dev/howto/static-files/
+
+
+
+
+
+- 오픈소스에 기여하기!
+
+  ex) 번역하기. 
+
+  ex) 커멘트 달기(커멘트 달기 귀찮은 개발자들 대신 달기)
+
+  
+
+- settings.py에 `STATICFILES_DIRS = []` 를 만들고
+
+  `STATICFILES_DIRS = [os.path.join(BASE_DIR, 'board', 'assets')]`
+
+  - assets. 이 폴더에는 주로 뭘 넣는가?
+
+    부트스트랩에도 있었다.
+
+    주로 css, js, img, font 등등 정적 자산들을 global하게 이곳에 넣는다.
+
+  - 우리 favicon을 이곳으로 옮긴다.
+
+    그리고 html을 수정해준다.
+
+    ```html
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'images/favicon-16x16.png' %}">
+    ```
+
+
+
+중급 개발자가 된다는 것? 장고가 해준 것이 많은데, 그 바닥을 알게 된다는 것
 

@@ -1058,6 +1058,61 @@ for T in range(1, int(input()) + 1):
 
 
 
+- binary counting과 재귀를 통해 부분집합을 생성하자
+
+  - 재귀가 더 빠르다. 재귀를 쓰자.
+
+  ```python
+  import datetime
+  
+  M = int(input())
+  start = datetime.datetime.now()
+  
+  ########### binary counting을 통해 부분집합을 생성하는 로직
+  lst = [i for i in range(1, M + 1)]
+  for i in range(1 << M):
+      arr = []
+      for j in range(M):
+          if i & (1 << j):
+              arr += [lst[j]]
+      # print(arr)
+  
+  ########### 재귀를 통해 부분집합을 생성하는 로직
+  def subset(arr, depth):
+      global count
+      if depth == M:
+          count += 1
+          result = []
+          for i in range(M):
+              if arr[i]:
+                  result += [lst[i]]
+          # print(result)
+      else:
+          ar = arr[:]
+          ar += [1]
+          # 몇 번째 원소를 선택했을 경우
+          subset(ar, depth + 1)
+          ar = arr[:]
+          ar += [0]
+          # 몇 번째 원소를 선택하지 않았을 경우
+          subset(ar, depth + 1)
+  
+  
+  ############ 재귀가 더 빠르다.
+  count = 0
+  subset([], 0)
+  print(count)
+print(datetime.datetime.now() - start)
+  ```
+
+  
+  
+  
+
+
+
+
+
 ### 이진탐색
 
 - 문제를 꼼꼼히 읽자
@@ -3518,7 +3573,101 @@ def solve(k, s):
 
 
 
-# 9월 6일
+# 9월 20일
+
+## 문제풀이
+
+
+
+
+
+## 완전검색
+
+1. 반복과 재귀
+   - pre-test / post-test
+   - 두 파트 : basis case & inductive case
+
+
+
+2. 완전검색 기법
+
+
+
+
+
+### 순열 생성 코드
+
+```python
+
+def perm_i():
+    for i1 in range(1, 4):
+        for i2 in range(1, 4):
+            if i2 != i1:
+                for i3 in range(1, 4):
+                    if i3 != i1 and i3 != i2:
+                        print(i1, i2, i3)
+
+
+def perm_r_1(n, r):
+    if r == 0:
+        print(t[0], t[1], t[2])
+    else:
+        for i in range(n - 1, -1, -1):
+            arr[i], arr[n - 1] = arr[n - 1], arr[i]
+            t[r - 1] = arr[n - 1]
+            perm_r_1(n - 1, r - 1)
+            arr[i], arr[n - 1] = arr[n - 1], arr[i]
+
+
+def perm_r_2(k):
+    if k == R:
+        print(arr[0], arr[1], arr[2])
+    else:
+        for i in range(k, N):
+            arr[k], arr[i] = arr[i], arr[k]
+            perm_r_2(k + 1)
+            arr[k], arr[i] = arr[i], arr[k]
+
+
+
+def perm_r_3(k):
+    if k == N:
+        print(t[0], t[1], t[2])
+    else:
+        for i in range(N):
+            if visited[i]: continue
+            t[k] = arr[i]
+            visited[i] = 1
+            perm_r_3(k + 1)
+            visited[i] = 0
+
+
+
+print('순열 반복문')
+perm_i()
+
+N = 3
+R = 3
+
+a = [0] * N
+arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+
+
+t = [0] * N
+print('순열 재귀문1')
+perm_r_1(N, R)
+
+
+print('순열 재귀문2')
+perm_r_2(0)
+
+
+visited = [0] * N
+print('순열 재귀문3')
+perm_r_3(0)
+```
+
+
 
 
 

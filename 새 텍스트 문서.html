@@ -1,0 +1,185 @@
+Skip to content
+Why GitHub? 
+Enterprise
+Explore 
+Marketplace
+Pricing 
+Search
+
+Sign in
+Sign up
+100bds511/snake
+ Code Issues 0 Pull requests 0 Projects 0 Security Insights
+Join GitHub today
+GitHub is home to over 40 million developers working together to host and review code, manage projects, and build software together.
+
+snake/snake.html
+@bds511 bds511 fix bug and readme
+463166b yesterday
+174 lines (162 sloc)  2.73 KB
+  
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<script src="https://code.jquery.com/jquery.js"></script>
+		<title>스네이크</title>
+	</head>
+	<body>
+<canvas id ="myCanvas" width="300" height="300">
+	</canvas>
+
+
+<script>
+	var canvas;
+	var ctx;
+	var state;
+	var real_state;
+	function initCanvas()
+	{
+		canvas=$("#myCanvas")[0];
+		ctx=canvas.getContext("2d");
+		ctx.fillstyle="black";
+		ctx.rect(0,0,300,300);
+		ctx.fill();
+	};
+	var hGameLoop;
+	var x, y, length
+	x_array=new Array();
+	y_array=new Array();
+	x_array[0]=x
+	y_array[0]=y
+	x=0
+	y=0
+	length=0
+	draw_apple();
+	function gameLoop()
+	{
+		console.log(1);
+		function drawScreen()
+		{
+			ctx.fillStyle="black";
+			ctx.rect(0,0,300,300);
+			ctx.fill();
+			ctx.font = "10px";
+			ctx.fillStyle = "white";
+			ctx.fillText(length+1,250,20)
+			ctx.fillStyle="white";
+			for(i=0; i<=length; i++){
+			ctx.fillRect(x_array[i]*10, y_array[i]*10, 10, 10);
+		}
+			ctx.fillStyle="red";
+			ctx.fillRect(x_apple*10, y_apple*10,10,10);
+		}
+		function doTurn()
+		{
+			real_state=state;
+			switch(real_state)
+			{
+				case "left":
+				x--;
+				addToArray();
+				break;
+				case "right":
+				x++;
+				addToArray();
+				break;
+				case "up" :
+				y--;
+				addToArray();
+				break;
+				case "down" :
+				y++;
+				addToArray();
+				break;
+			};
+		function addToArray()
+		{	
+			for(i=0;i<=length;i++){
+			if(x_array[i]==x&&y_array[i]==y){
+				stopGame();
+			}
+			}
+			x_array.unshift(x);
+			y_array.unshift(y);
+			if(x==x_apple && y==y_apple){
+				draw_apple();
+				length=length+1
+			}else{
+				x_array.pop();
+				y_array.pop();
+			}
+		}
+		}
+		if (x>30 || x<0 || y>30 || y<0){
+			stopGame();
+			}
+		drawScreen();
+		doTurn();
+	}
+	function draw_apple()
+		{
+		var flag;
+		flag=0
+		while(flag==0){
+		x_apple=Math.floor(Math.random()*30);
+		y_apple=Math.floor(Math.random()*30);
+		for(i=0; i<=length; i++){
+			if(!(x_array[i]==x_apple)||!(y_apple==y_array[i])){
+				flag=1
+			}
+		}
+		}
+		}
+	function startGame()
+	{
+		hGameLoop=setInterval(gameLoop, 100);
+	}
+	function stopGame()
+	{
+		clearInterval(gameLoop,16);
+		state=0
+		alert("Game Over")
+		x_array=new Array();
+	y_array=new Array();
+	x_array[0]=x
+	y_array[0]=y
+	x=0
+	y=0
+	length=0
+	}
+	function KeyPressed(evt)
+	{
+		$("#p1 .panel-body").html(evt.keyCode);
+		switch(evt.keyCode)
+		{
+			case 37:
+			if (!(state=="right" || real_state=="right")){
+			state = "left";
+			}
+			break;
+			case 38:
+			if (!(state=="down"|| real_state=="down")){
+			state ="up";
+			}
+			break;
+			case 39:
+			if (!(state=="left"|| real_state=="left")){
+			state= "right";
+			}
+			break;
+			case 40:
+			if (!(state=="up"|| real_state=="up")){
+			state= "down";
+			}
+			break;
+		}
+	}
+	$(function() {
+	$(window).keydown(KeyPressed);
+		initCanvas();
+		startGame();
+	});
+</script>
+
+</body>
+</html>
