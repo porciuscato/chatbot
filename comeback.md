@@ -1767,3 +1767,723 @@ http://pythonstudy.xyz/
 
 중급 개발자가 된다는 것? 장고가 해준 것이 많은데, 그 바닥을 알게 된다는 것
 
+
+
+- 
+
+
+
+# 9월 23일
+
+DB
+
+#### DB는 왜하는가?
+
+persistant data. 영구적인 데이터를 관리하는 DB.
+
+그런데.. 이 DB를 관리하는 방법 중 하나인 Django의 ORM을 활용
+
+```python
+Post.objects.all()
+```
+
+장고 ORM이 DBMS를 다루는 언어를 한 번 더 번역하게 됨. (우리는 SQLite를 씀)
+
+RDBMS - 관계형 데이터 베이스 결국 엑셀과 같다.
+
+oracle db, mysql 등등 이런 개념으로 프로그램을 구현
+
+이 프로그램들을 다룰 때, SQL이라는 특수한 언어를 씀
+
+-> 그러나 이 언어를 배워야하는 비용이 발생해서 ORM을 사용
+
+
+
+우리나라는 DB 수업이 1학기. 해외 데이터베이스 수업은 다르다??
+
+`berkeley database` : 이런 수업을 들으면 됨 `cs 186. introduction to Database Systems`
+
+`https://www2.eecs.berkeley.edu/Courses/CS186/`
+
+
+
+
+
+shell_plus
+
+```
+qs = Post.obejcts.all()
+# queryset이 어떤 메소드를 가지고 있는지 보기 위해
+dir(qs)
+# 쭉 하고 나옴
+# 이 친구 중에 query를 치면
+qs.query
+# 어떤 객체가 나옴
+print(qs.query)
+# 하면 우리가 post.objects.all() 했을 때 orm이 나오게 됨
+```
+
+
+
+
+
+------
+
+영구 데이터를 저장하는 것은 파일로 가능하다.
+
+그런데 왜 굳이 복잡해보이는 DB를 쓰는 것인가? -> 체계화된 데이터의 모임 -> 편하게 데이터를 관리할 수 있다.
+
+
+
+데이터베이스 자체가 굉장히 모던한 방식.
+
+
+
+
+
+- 스키마(schema) : 우리는 장고의 models.py에 저장했다.
+
+  | column | datatype |
+  | ------ | -------- |
+  | id     | INT      |
+  | age    | INT      |
+  | phone  | TEXT     |
+  | email  | TEXT     |
+
+  => 데이터의 구조, 표현방법, 관계 등을 정의
+
+  - 메타데이터라고도 함
+
+
+
+이들을 조회하고 검색하기 위해선 PK(기본키)가 항상 존재한다.
+
+```
+- 장고는 지정을 하지 않아도 알아서 해줌
+```
+
+
+
+테이블들이 모여서 하나의 엑셀 파일이 되면 그것이 데이터 베이스
+
+
+
+## 1. SQL 개념
+
+sql(structured query language)
+
+마치 공용어처럼 자리잡게 됨. SQL을 통해 조작할 수 있게 끔 DB를 만들었음
+
+단순히 RDBMS 뿐만 아니라, 분산형 DB(adobe 등등) 등 다양한 포맷들, 심지어 블록체인에서 sql을 통해 데이터를 조작하려고 함
+
+### SQL의 세가지 종류
+
+- DDL 데이터 정의 언어
+- DML 데이터 조작 언어
+- DCL
+
+생성하고 구조를 잡는 DDL과 조작하는 DML을 위주로 공부할 예정
+
+
+
+### SQL keywords
+
+- CRUD
+- insert, select, update, delete
+
+
+
+#### sqlite를 다운받자. 인스톨러 짓을 해보자. (손수 다 추가해서 쓰면 됨)
+
+- 환경변수에 저장하자. 
+  - 속성에서 경로를 받은 다음에
+  - 커맨드 창에 딱 치면 바로 나오게 만들자. (커맨드 치면 환경변수를 먼저 검색한다.)
+    - 시스템변수는 헤비하니, 사용자 변수에 넣자.
+    - sqlite를 우리가 원하는 폴더로 옮기고 경로를 복사하여 환경 변수에 추가하자.
+    - 그 중 Path에 새로 만들기로 추가하자.
+- 그런데 git에서 sqlite3를 쓰면 망함
+
+
+
+min을 쓰려면?
+
+`cygwin, winpty` : 얘네들을 알게 모르게 씀
+
+git 창에다
+
+`winpty sqlite3` : 를 치면 됨
+
+별명을 만들어주려면 
+
+```
+$code .
+$./bashrc
+에서 
+alias sqlite3='winpty sqlite3'
+를 하고 source ~/.bashrc를 하면 됨
+```
+
+
+
+우리가 만들었던 db.sqlite3를 열어보자.
+
+```
+$cd ~/class/crud
+$sqlite3 db.sqlite3
+```
+
+
+
+### 커맨드
+
+- 커맨드의 기본은 `.` 을 찍고 하는 것
+
+  ```
+  $.exit # 종료하기
+  혹은
+  ctrl + z + ENTER
+  ```
+
+- `.databases` : 모든 데이터를 다 보겠다.
+
+  ```
+  main: C:\Users\student\class\crud\db.sqlite3
+  ```
+
+  -> 메인 디비가 열려있다는 것
+
+- 테이블을 보려면 `.tables`
+
+  `SELECT * FROM posts_post;`
+
+  `SELECT title FROM posts_post;`
+
+
+
+#### 파일들을 DB화해서 가져오려면 어떻게 해야하는가?
+
+일단 DB를 생성하자
+
+- Database 생성
+
+  `sqlite3 database`
+
+  그러나 빈 파일에 이 명령어를 치면 아무것도 나오지 않는다.
+
+  `sqlite3 tutorial.sqlite3` : 파일을 알아서 만든다.
+
+- DB를 csv 모드로 바꾸고
+
+  `.mode csv`
+
+- examples의 테이블에 넣어준다.
+
+  `.import hellodb.csv examples`
+
+- `.tables` : 로 테이블을 확인한다.
+
+- `SELECT * FROM examples` : 테이블에 있는 모든 걸 다 가져오는데
+
+  - 안 이쁘다. 그래서 이쁘게 보려면
+
+    `.headers on`
+
+    `.mode column`
+
+    하면 이쁘게 나옴
+
+=> 이제 우리가 csv를 데이터베이스화 시킨 것
+
+
+
+#### DB를 만들어보자
+
+##### `CREATE TABLE`  : 테이블을 만들기
+
+```sqlite
+sqlite> CREATE TABLE classmates(
+   ...> id INTEGER PRIMARY KEY,
+   ...> name TEXT
+   ...> );
+```
+
+- 하나의 DB는 여러 개의 테이블을 가질 수 있다.
+
+
+
+- sqlite는 Datatype을 알아서 만들어준다.
+  - INTEGER 
+    - TINYINT(1byte), SMALLINT(2bytes), MEDIUMINT(3bytes), INT(4bytes),
+      BIGINT(8bytes), UNSIGNED BIG INT
+  - TEXT 
+    - CHARACTER(20), VARCHAR(255), TEXT
+  - REAL
+    - REAL, DOUBLE, FLOAT
+  - NUMERIC
+    - NUMERIC, DECIMAL, BOOLEAN, DATE, DATETIME
+  - BLOB
+    - no datatype specified
+
+
+
+- `.schema classmates`  : 테이블의 스키마를 볼 수 있다.
+- 그런데 csv를 그냥 import하면 전부 text타입으로 받아들인다. 그러므로 스키마를 정의하면 이쁘게 들어온다.
+
+
+
+##### DB를 지우자
+
+`DROP TABLES examples;` 
+
+
+
+##### 데이터 추가(INSERT)
+
+```
+sqlite> INSERT INTO classmates(name, age)
+   ...> VALUES('홍길동', 24);
+```
+
+확인해보자
+
+```sqlite
+sqlite> SELECT * FROM classmates;
+```
+
+```sqlite
+sqlite> INSERT INTO classmates(name, age, address)
+   ...> VALUES('홍길동', 30, '서울');
+```
+
+- 그런데 칼럼을 전부 넣을 거면 안 써도 된다. 부분을 넣을 땐 써줘야 함
+
+```sqlite
+sqlite> INSERT INTO classmates VALUES('이삼성', 50, '수원');
+```
+
+
+
+그런데 데이터를 마구 넣다보면 중복이 생긴다. 중복은 어떻게 막는가? : `rowid`
+
+A. SQLite 는따로 PRIMARY KEY 속성의컬럼을 작성하지 않으면 값이 자동으로 증가하는 PK 옵션을 가진 `rowid` 컬럼을 정의한다. 
+
+`sqlite> SELECT rowid, * FROM classmates;`
+
+
+
+새로 테이블을 만들어보자
+
+```sqlite
+sqlite> CREATE TABLE classmates(
+   ...> id INTEGER PRIMARY KEY,
+   ...> name TEXT NOT NULL,
+   ...> age INT NOT NULL,
+   ...> address TEXT NOT NULL
+   ...> );
+```
+
+- NOT NULL : 빈값을 허용하지 않는다는 것. 
+  - 디폴트 값이 있을지언정 NONE이 있으면 골치아프다.
+
+```sqlite
+sqlite> insert into classmates values('김싸피', 30, '서울');
+Error: table classmates has 4 columns but 3 values were supplied
+sqlite> insert into classmates values(1, '김싸피', 30, '서울');
+```
+
+- 그런데 primary key를 다 알고 있어야한다.
+
+```sqlite
+sqlite> insert into classmates (name, age, address)
+   ...> values ('이멀티', 24, '서울');
+sqlite> select * from classmates;
+```
+
+- 처음에만 설정해주면 나머지는 알아서 증가시켜준다.
+
+```sqlite
+sqlite> insert into classmates(name, age, address) values('임나연', 25, '서울');
+sqlite> select * from classmates;
+id          name        age         address
+----------  ----------  ----------  ----------
+1           김싸피         30          서울
+4           안녕          27          전남
+5           장복동         40          서울
+6           이멀티         24          서울
+7           임나연         25          서울
+```
+
+
+
+```sqlite
+sqlite> insert into classmates (name, age) values ('손채영', 20);
+Error: NOT NULL constraint failed: classmates.address
+```
+
+- `rowid`는 자동으로 작성되었는데, 직접 id 칼럼을 만든 후에는 해당 컬럼을 입력하지 않으면 자동을 입력되지 않는다. 
+- NOT NULL 을 넣어줘야 함. 
+
+
+
+##### 조회하기
+
+- `limit`을 설정하기 -> 나중에 한개만 뽑고 싶을 때 많이 쓴다.
+
+  ```sqlite
+  sqlite> SELECT * FROM classmates LIMIT 2;
+  id          name        age         address
+  ----------  ----------  ----------  ----------
+  1           김싸피         30          서울
+  4           안녕          27          전남
+  ```
+
+- 단위로 가져올 땐 `offest` : 이 친구는 반드시 limit과 함께 써야한다.
+
+  ```
+  sqlite> SELECT * FROM classmates LIMIT 3 OFFSET 1;
+  id          name        age         address
+  ----------  ----------  ----------  ----------
+  4           안녕          27          전남
+  5           장복동         40          서울
+  6           이멀티         24          서울
+  sqlite> SELECT * FROM classmates LIMIT 3 OFFSET 2;
+  id          name        age         address
+  ----------  ----------  ----------  ----------
+  5           장복동         40          서울
+  6           이멀티         24          서울
+  7           임나연         25          서울
+  sqlite> SELECT * FROM classmates LIMIT 3 OFFSET 3;
+  id          name        age         address
+  ----------  ----------  ----------  ----------
+  6           이멀티         24          서울
+  7           임나연         25          서울
+  8           트와이스        23          jyp
+  ```
+
+  - 게시판을 만들 때, 50개씩 띠우게 된다면.... offset을 건드리게 되는 것
+
+  ```
+  sqlite> SELECT * FROM classmates LIMIT 1 OFFSET 1;
+  id          name        age         address
+  ----------  ----------  ----------  ----------
+  4           안녕          27          전남
+  ```
+
+  
+
+- `where` 정말정말 중요
+
+  Posts.objects.all(pk=1)
+
+  ```sqlite
+  sqlite> SELECT * FROM classmates WHERE id=1;
+  id          name        age         address
+  ----------  ----------  ----------  ----------
+  1           김싸피         30          서울
+  ```
+
+  SELECT * FROM classmates WHERE name='김싸피';
+
+  ```sqlite
+  sqlite> SELECT * FROM classmates WHERE name='김싸피';
+  id          name        age         address
+  ----------  ----------  ----------  ----------
+  1           김싸피         30          서울
+  ```
+
+  
+
+shell_plus : text option eucKR / sql : utf-8
+
+
+
+- 중복없이 가져오기
+
+  ```sqlite
+  sqlite> SELECT age FROM classmates;
+  age
+  ----------
+  30
+  27
+  40
+  24
+  25
+  23
+  sqlite> SELECT DISTINCT age FROM classmates;
+  age
+  ----------
+  30
+  27
+  40
+  24
+  25
+  23
+  ```
+
+  - 가지고 있는 데이터 중, 유니크한 값을 찾아낸다.
+
+
+
+
+
+##### 지우기
+
+- 특정한 레코드를 삭제하자.
+
+  `DELETE FROM table WEHRE condition`
+
+  ```sqlite
+  sqlite> delete from classmates where id=1;
+  sqlite> select * from classmates;
+  id          name        age         address
+  ----------  ----------  ----------  ----------
+  4           안녕          27          전남
+  5           장복동         40          서울
+  6           이멀티         24          서울
+  7           임나연         25          서울
+  8           트와이스        23          jyp
+  ```
+
+  - primary key 가 아닌 걸 지우면 큰일날 수 있다.
+  - 중복이 불가능한 primary key, rowid를 기준으로 지우자
+
+
+
+```
+- sqlite는 기본적으로 일부 행을 삭제하고 새 행을 삽입하면 삭제된 행의 값을 재사용하려고 시도한다. (장고는 재사용하지 않음) 
+```
+
+- 아이디는 재사용하지 않는 것이 좋다. 
+  - primary key에 auto increment가 안 되어 있으면 재사용하려한다. `AUTOINCREMENT`
+
+```sqlite
+sqlite> CREATE TABLE tests(
+   ...> id INTEGER PRIMARY KEY AUTOINCREMENT,
+   ...> name TEXT NOT NULL);
+```
+
+
+
+- 이름 하나에 여러 개의 행을 넣을 수 있다
+
+  ```sqlite
+  sqlite> INSERT INTO tests(name) values('손채영'), ('박지효');
+  sqlite> select * from tests;
+  id          name
+  ----------  ----------
+  1           손채영
+  2           박지효
+  ```
+
+  ```sqlite
+  sqlite> insert into tests (name) values('임미나');
+  sqlite> select * from tests;
+  id          name
+  ----------  ----------
+  1           손채영
+  3           임미나
+  ```
+
+  -> AUTOINCREMENT
+
+  
+
+
+
+#### UPDATE table
+
+```sqlite
+sqlite> select * from classmates;
+id          name        age         address
+----------  ----------  ----------  ----------
+4           안녕          27          전남
+5           장복동         40          서울
+8           트와이스        23          jyp
+9           조주희         20          대만
+sqlite> UPDATE classmates SET address='서울' where name='트와이스';
+sqlite> select * from classmates;
+id          name        age         address
+----------  ----------  ----------  ----------
+4           안녕          27          전남
+5           장복동         40          서울
+8           트와이스        23          서울
+9           조주희         20          대만
+```
+
+```sqlite
+sqlite> update classmates set age=28 where name='안녕';
+sqlite> select * from classmates;
+id          name        age         address
+----------  ----------  ----------  ----------
+4           안녕          28          전남
+5           장복동         40          서울
+8           트와이스        23          서울
+9           조주희         20          대만
+10          고니          28          남원
+sqlite> update classmates set name='아귀' where age=28;
+sqlite> select * from classmates;
+id          name        age         address
+----------  ----------  ----------  ----------
+4           아귀          28          전남
+5           장복동         40          서울
+8           트와이스        23          서울
+9           조주희         20          대만
+10          아귀          28          남원
+```
+
+
+
+### 4. 데이터 추가, 읽기, 수정, 삭제 정리
+
+| -    | -      | -                                                            |
+| ---- | ------ | ------------------------------------------------------------ |
+| C    | INSERT | INSERT INTO classmates(name, age, address) VALUES('홍길동', 30, '서울'); |
+| R    | SELECT | SELECT * FROM classmates WHERE id=1;                         |
+| U    | UPDATE | UPDATE classmates SET name='철수' WHERE id=1;                |
+| D    | DELETE | DELETE FROM classmates WHERE id=1;                           |
+
+
+
+### 5. WHERE, expression
+
+
+
+
+
+
+
+- sql을 쓸 땐, where을 잘 쓰는 것이 좋음
+
+
+
+
+
+- 테이블을 정의하고 테이블에 넣어주면 됨
+
+  ```sqlite
+  sqlite> .schema users2
+  CREATE TABLE users2 (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  age INT NOT NULL,
+  country TEXT NOT NULL,
+  phone TEXT NOT NULL,
+  balance INT NOT NULL
+  );
+  ```
+
+  
+
+
+
+- `count` : 해당 칼럼에 해당하는 숫자를 나타낸다.
+
+  ```sqlite
+  sqlite> select count(*) from users;
+  1000
+  sqlite> select count(last_name) from users;
+  1000
+  sqlite> select count(id) from users;
+  1000
+  ```
+
+
+
+- 그 외 다양한 표현들
+
+  AVG(column) : 
+
+  ```sqlite
+  sqlite> select avg(age) from users;
+  27.346
+  ```
+
+  SUM()
+
+  MIN()
+
+  MAX()
+
+  등등
+
+  ```
+  sqlite> select avg(age) from users where age>=30;
+  35.1763285024155
+  ```
+
+  ```sqlite
+  sqlite> select first_name, last_name, age, MAX(balance) from users;
+  "선영","김",37,990000
+  sqlite> select avg(balance) from users where age>=30;
+  153541.425120773
+  ```
+
+
+
+- where의 와일드 카드. (wild cards)
+
+  - 정확한 값에 대한 비교가 아닌, 패턴을 확인하여 해당하는 값을 반환한다.
+
+  | %    | 2%             | -    |
+  | ---- | -------------- | ---- |
+  |      | %2             |      |
+  |      | %2%            |      |
+  | _    | _2%            |      |
+  |      | 1___           |      |
+  |      | `2_%_%/2 /__%` |      |
+
+  
+
+
+
+
+
+
+
+#### ORDER
+
+`ORDER BY column1, column2 ASC|DESC;`
+
+
+
+csv를 넣어줄 땐 header 줄을 날려야한다.
+
+
+
+
+
+
+
+### 7. ALTER
+
+#### 7.1 테이블명 변경
+
+```sqlite
+sqlite> .tables
+classmates  tests       users2
+sqlite> ALTER TABLE users2 RENAME TO users;
+sqlite> .tables
+classmates  tests       users
+```
+
+
+
+#### 7.2 새로운 컬럼 추가
+
+- 디폴트 값을 넣기
+
+  ```sqlite
+  sqlite> ALTER TABLE tests ADD COLUMN created_at DATETIME NOT NULL;
+  ```
+
+  
+
+
+
+
+
+- 과목평가: 예제들만 다 뽑아낼 수 있으면 된다.
+
+- detail하게 sql에 대해 자세하게 공부할 수 있어야 함
+
