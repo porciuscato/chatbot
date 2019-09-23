@@ -1243,24 +1243,24 @@ comm.post.content
 해당하는 글이 가지고 있는 모든 comment를 보여주기 위해.... 글의 입장에서 댓글을 보도록 하자
 
 ```
-post_2.commnent_set
+post_2.comment_set
 # 네가 가지고 있는 커맨트 집합을 전부 보여달라는 것
 ```
 
 ```
-post_2.commnent_set.all()
-# <QuerySet [<Commnent: comment object (1)>]>
+post_2.comment_set.all()
+# <QuerySet [<Comment: comment object (1)>]>
 ```
 
 **메타 프로그래밍 영역**(메소드 명을 런타임 중에 생성하는 것!!!!)
 
 ```
-post_2.commnent_set.last()
+post_2.comment_set.last()
 # 뽑은 애들 중에 마지막 애로 접근이 가능하다.
 ```
 
 ```
-post_2.commnent_set.last().content
+post_2.comment_set.last().content
 # 이렇게 하면 댓글이 나온다!!
 ```
 
