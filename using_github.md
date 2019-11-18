@@ -211,9 +211,9 @@ ex) `git clone https://github.com/porciuscato/ssafy_chatbot.git`
 
 
 
-git config --unset --global user.name
+`git config --unset --global user.name`
 
-git config --unset --global user.email
+`git config --unset --global user.email`
 
 이름하고 메일을 지우는 것
 
@@ -573,7 +573,7 @@ Git은 가능한 한 커밋을 가볍게 유지하고자 하기때문에, 커밋
 브랜치를 서둘러서, 그리고 자주 만드세요
 ```
 
-브랜치를 많이 만들어도 메모리나 디스크 공간에 부담이 되지 않기 때문에, 여러분의 작업을 커다른 브랜치로 만들기 보다, 작은 단위로 잘게 나누는 것이 좋습니다.
+브랜치를 많이 만들어도 메모리나 디스크 공간에 부담이 되지 않기 때문에, 여러분의 작업을 커다란 브랜치로 만들기 보다, 작은 단위로 잘게 나누는 것이 좋습니다.
 
 브랜치와 커밋을 같이 쓸 때, 어떻게 두 기능이 조화를 이루는지 알아보겠습니다. 하지만 우선은, 단순히 브랜치를 "하나의 커밋과 그 부모 커밋들을 포함하는 작업 내역"이라고 기억하시면 됩니다.
 
