@@ -164,7 +164,11 @@ CRUD를 기준으로 각 메소드들이 어떤 역할을 하는지 정리!
   - https://www.slideshare.net/StateofAIReport/state-of-ai-report-2019-151804430?utm_campaign=nathan.ai+newsletter&utm_medium=email&utm_source=Revue+newsletter&fbclid=IwAR3AePtREh01DwNDFapdOK_I0nRLN9lKbhtsqnSbkoO-M5kEKEToL3KT6x8
   - 
 
-
+- 호주 일자리 관련
+  - https://www.seek.com.au
+  - 김용균 :  https://edykim.com/ko/ 
+- 자바스크립트
+  -  http://latentflip.com/loupe/ 
 
 
 
