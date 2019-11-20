@@ -490,7 +490,7 @@ push하는 순간 origin/master와 master가 달라졌음을, 커밋이 밀려�
 
   `git push origin develop`
 
-- 개별 repository도 깃헙 페이로 만들 수 있다.
+- 개별 repository도 깃헙 페이지로 만들 수 있다.
 
   - settings - > 아래로 쭉 내리면 github pages -> source를 None에서 수정
 
@@ -702,3 +702,31 @@ commit history가 완전히 올라가기 때문에
 page만 보여줬던 걸 create 안에 넣었던 것
 
 edit을 update 안에 넣어보면?
+
+
+
+
+
+## 원격 브랜치 삭제
+
+지울 브랜치는 origin의 develop 브랜치다
+
+```
+$ git push origin --delete develop
+```
+
+
+
+
+
+## private clone하기
+
+1. credential.helper를 지운다.
+
+`git config --system --unset credential.helper`
+
+
+
+
+
+`git push --set-upstream origin jinhong`
