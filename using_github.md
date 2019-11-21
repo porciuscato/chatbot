@@ -538,7 +538,7 @@ Branches -> Branch protection rule -> require pull request reviews before mergin
 
 # Git branching 배우기
 
-https://learngitbranching.js.org](https://learngitbranching.js.org/
+[깃 공부](https://learngitbranching.js.org/)
 
 #### 쓸 수 있는 git 명령어
 
@@ -730,3 +730,9 @@ $ git push origin --delete develop
 
 
 `git push --set-upstream origin jinhong`
+
+
+
+
+
+bootstrap4는 `pip install django-bootstrap`
