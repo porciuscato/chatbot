@@ -649,3 +649,22 @@ commit 시 'merge conflic' 메시지를 써주는게 관례
 
 
 타임스탬프에 따라 두 개가 합쳐져서..... 시간순으로 팀원이 한 것이 먼저 찍히고, 팀장 것이 시간 순으로 배치되고 merge commit이 찍힌 상태
+
+
+
+
+
+
+
+
+
+
+
+Real Artists ship
+
+Real Developer deploy
+
+-> 완성품을 만들어낼 수 있는 능력
+
+개발의 끝은 push가 아니라 `배포`다
+
