@@ -6,3 +6,8 @@
 
 - [homepage](./homepage/index.html)
 
+- [python](./python_문법.md)
+
+
+
+-> 파일명을 설정할 땐 띄어쓰기를 하지 말자
