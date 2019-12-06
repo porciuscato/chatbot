@@ -1,5 +1,32 @@
-+ Linus Torvalds : 깃을 만든 사람.
+# Git
 
+## 차례
+
+- [명령어](#명령어)
+- [참고사항](#참고사항)
+
+
+
+
+
+## 명령어
+
+### git 시작하기
+
+- `git init` : 현재 폴더를 git으로 파일 관리하겠다.
+- `git add .` : 현재 폴더의 모든 파일을 git에 추가시키겠다.
+- `git commit -m 'msg'` : 현재 추가된 상태를 저장하겠다.
+- 
+
+
+
+
+
+## 참고사항
+
+
+
++ Linus Torvalds : 깃을 만든 사람.
 + 생활코딩 : 지옥에서 온 git 강의. git 사용을 위한 참고 영상
 
 
@@ -9,6 +36,10 @@
 *** 진실은 github으로 하자. 만약 conflict가 발생한다면 github을 기준으로 삼자. 
 
 *** 깃은 사용이 어려우므로 지우고 복원하기를 수없이 반복해야 함. 
+
+
+
+[아래로 가자](# 모내기하기)
 
 
 
@@ -736,3 +767,9 @@ $ git push origin --delete develop
 
 
 bootstrap4는 `pip install django-bootstrap`
+
+[#down]: 
+[#다운-받기]: 
+[##다운-받기]: 
+[#모내기하기]: 
+[# 모내기하기]: 
